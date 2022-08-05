@@ -2,3 +2,6 @@
 //  Undergraduate ECE student, Alexandria university.
 
 
+module BaudGen();
+
+endmodule

@@ -7,7 +7,7 @@
 module FrameGen(
     input   [7:0]   DataIn,
     input   [1:0]   ParityType,
-    input   Reset, ParityOut,
+    input   ResetN, ParityOut,
     input   StopBits,                   //If Low use 1 Stop bit, else 2 Stop bits
     input   DataLength,                 //If low use 7 Data bits, else 8 Data bits
     output reg  [10:0]  FrameOut        //Frame: [{(idle 1's if needed), stopbit/s, ParityBit, DataIn[MSB:LSB], Startbit}]
@@ -31,8 +31,8 @@ always @(StopBits,DataLength) begin
 end 
 
 //Frame generating part
-always @(negedge Reset, DataIn) begin
-    if (~Reset)
+always @(negedge ResetN, DataIn) begin
+    if (~ResetN)
         FrameOut    =   12'b1;            //idle
     else begin
       if (ParityType = 2'b00 || ParityType = 2'b11)    //Frame with no parity bit

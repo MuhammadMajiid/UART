@@ -6,16 +6,16 @@
 
 module ParityUnit(
     input   [7:0]    DataIn,
-    input   Reset,
+    input   ResetN,
     input   [1:0]   ParityType,
     output reg  ParityOut
 );
 reg ParityCheck;
 
 //Parity type
-always @(negedge Reset, ParityType, DataIn) begin
+always @(negedge ResetN, ParityType, DataIn) begin
     ParityCheck  =   ^DataIn;
-    if(~Reset)begin
+    if(~ResetN)begin
       ParityType    =   2'b00;        //No parity
     end
     else begin
