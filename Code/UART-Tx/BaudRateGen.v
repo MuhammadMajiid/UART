@@ -2,6 +2,42 @@
 //  Undergraduate ECE student, Alexandria university.
 
 
-module BaudGen();
+module BaudRateGen(
+    input Clk, ResetN,
+    input [1:0] BaudRate,
+
+    output BaudOut
+);
+
+reg [13 : 0] Counter ; 
+reg [13 : 0] FinalValue ; 
+
+//Counter Part
+always @(posedge Clock , negedge ResetN) begin
+    if(~ResetN) begin
+        Counter = 0 ; 
+        BaudOut = 0 ; 
+    end 
+    
+    else begin
+        Counter = Counter + 'd1 ;
+        if (Counter == FinalValue) begin
+        Counter = 0 ; 
+        BaudOut = ~BaudOut ; 
+        end 
+    end 
+    
+end
+
+//BaudRate 4-1 Mux
+always @(BaudRate) begin
+    case (BaudRate)
+        2'b00 : FinalValue = 'd10417 ;      //2400 BaudRate.
+        2'b01 : FinalValue = 'd5208 ;       //4800 BaudRate.
+        2'b10 : FinalValue = 'd2604 ;       //9600 BaudRate.
+        2'b11 : FinalValue = 'd1302 ;       //19200 BaudRate.
+        default: FinalValue = 0 ;           //The systems original Clock
+    endcase
+end
 
 endmodule

@@ -4,17 +4,17 @@
 
 module PISO
     #(parameter Bits = 11)(
-    input [1:0]   parity_type, 
-	input 		  stop_bits, 	//low when using 1 stop bit, high when using two stop bits.
-    input 		  data_length, 	//low when using 7 data bits, high when using 8.
-    input         send, rst,  
+    input [1:0]   ParityType, 
+	input 		  StopBits, 	//low when using 1 stop bit, high when using two stop bits.
+    input 		  DataLength, 	//low when using 7 data bits, high when using 8.
+    input         Send, ResetN,  
     input         BaudOut,    
     input [Bits - 1:0]  FrameOut,
   
-    output reg 	data_out, 		//Serial data_out
-	output reg 	p_parity_out, 	//parallel odd parity output, low when using the frame parity.
-	output reg 	tx_active, 		//high when Tx is transmitting, low when idle.
-	output reg 	tx_done 		//high when transmission is done, low when not.
+    output reg 	DataOut, 		//Serial data_out
+	output reg 	ParallParOut, 	//parallel odd parity output, low when using the frame parity.
+	output reg 	ActiveFlag, 		//high when Tx is transmitting, low when idle.
+	output reg 	DoneFlag 		//high when transmission is done, low when not.
 );
 
 //Internal declarations  
@@ -24,9 +24,9 @@ integer   SerialPos    = 0;
 
 
 //This part handles the odd parity check for the output p_parity_out
-always @(data_length, FrameOut) begin
+always @(DataLength, FrameOut) begin
 
-    DataIn = data_length? FrameOut[8:1] : {1'b0, FrameOut[7:1]};
+    DataIn = DataLength? FrameOut[8:1] : {1'b0, FrameOut[7:1]};
     //Parallel Odd parity
     ParHolder = (^DataIn)? 1'b0 : 1'b1;
 
@@ -34,40 +34,39 @@ end
 
 
 //This part handles the outputs
-always @(negedge rst, posedge BaudOut) begin
+always @(negedge ResetN, posedge BaudOut) begin
     
-    if (~rst) begin
-    data_out        = 'b1;
-    p_parity_out    = 'b0;
-    tx_active       = 'b0;
-    tx_done         = 'b1;
+    if (~ResetN) begin
+    DataOut        = 'b1;
+    ParallParOut    = 'b0;
+    ActiveFlag       = 'b0;
+    DoneFlag         = 'b1;
     end
     else begin
-        if (send) begin
+        if (Send) begin
             if (SerialPos == (Bits - 1)) begin
-                tx_done   = 1'b1;
-                tx_active = 1'b0;
+                DoneFlag   = 1'b1;
+                ActiveFlag = 1'b0;
                 SerialPos = 0;
-                //data_out  = 'b1;
             end
             else begin
-                data_out  = FrameOut[SerialPos];
+                DataOut  = FrameOut[SerialPos];
                 SerialPos = SerialPos + 1;
-                tx_done   = 1'b0;
-                tx_active = 1'b1;
+                DoneFlag   = 1'b0;
+                ActiveFlag = 1'b1;
             end
-            if (parity_type  == 'b00 || parity_type == 'b11 ) begin
-                p_parity_out = ParHolder;
+            if (ParityType  == 'b00 || ParityType == 'b11 ) begin
+                ParallParOut = ParHolder;
             end
             else begin
-                p_parity_out = 'b0;
+                ParallParOut = 'b0;
             end
         end
         else begin
-        data_out        = 'b1;
-        p_parity_out    = 'b0;
-        tx_done         = 1'b1;
-        tx_active       = 1'b0;
+        DataOut        = 'b1;
+        ParallParOut    = 'b0;
+        DoneFlag         = 1'b1;
+        ActiveFlag       = 1'b0;
         end
     end  
 end
