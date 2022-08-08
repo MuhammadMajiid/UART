@@ -4,7 +4,7 @@
 //  Data length could be 7 or 8 bits
 //  Stop bits could be 1 or 2 bits
 
-module FrameGen(
+module FrameGenerator(
     input   [7:0]   DataIn,
     input   [1:0]   ParityType,
     input   ResetN, ParityOut,
