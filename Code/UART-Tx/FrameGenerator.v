@@ -1,8 +1,6 @@
 //  This module is created by Mohamed Maged
 //  Undergraduate ECE student, Alexandria university.
-//  Frame generating unit, outputs 12-bit frame
-//  Data length could be 7 or 8 bits
-//  Stop bits could be 1 or 2 bits
+
 
 module FrameGenerator(
     input   [7:0]   DataIn,

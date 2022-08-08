@@ -1,30 +1,33 @@
-//  This module is created by Mohamed Maged
+//  This module is created by Mohamed Maged And Ali Morgan
 //  Undergraduate ECE student, Alexandria university.
 
 
-module BaudRateGen(
+module BaudRateGen
+    #(parameter Width = 14;)(
     input Clk, ResetN,
     input [1:0] BaudRate,
 
     output BaudOut
 );
 
-reg [13 : 0] Counter ; 
-reg [13 : 0] FinalValue ; 
+reg [Width - 1 : 0] Counter ; 
+reg [Width - 1 : 0] FinalValue ; 
 
 //Counter Part
-always @(posedge Clock , negedge ResetN) begin
+always @(negedge ResetN, posedge Clock) begin
     if(~ResetN) begin
         Counter = 0 ; 
         BaudOut = 0 ; 
     end 
     
     else begin
-        Counter = Counter + 'd1 ;
         if (Counter == FinalValue) begin
         Counter = 0 ; 
         BaudOut = ~BaudOut ; 
         end 
+        else begin
+        Counter = Counter + 'd1 ;
+        end
     end 
     
 end
