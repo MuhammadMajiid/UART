@@ -8,7 +8,7 @@ module PISO
 	input 		  StopBits, 	//low when using 1 stop bit, high when using two stop bits.
     input 		  DataLength, 	//low when using 7 data bits, high when using 8.
     input         Send, ResetN,  
-    input         BaudOut,    
+    input         BaudOut, ParityOut,  
     input [Bits - 1:0]  FrameOut,
   
     output reg 	DataOut, 		//Serial data_out
@@ -17,21 +17,8 @@ module PISO
 	output reg 	DoneFlag 		//high when transmission is done, low when not.
 );
 
-//Internal declarations  
-reg       ParHolder;
-reg [7:0] DataIn;
+//Internal declarations
 integer   SerialPos    = 0;
-
-
-//This part handles the odd parity check for the output p_parity_out
-always @(DataLength, FrameOut) begin
-
-    DataIn = DataLength? FrameOut[8:1] : {1'b0, FrameOut[7:1]};
-    //Parallel Odd parity
-    ParHolder = (^DataIn)? 1'b0 : 1'b1;
-
-end
-
 
 //This part handles the outputs
 always @(negedge ResetN, posedge BaudOut) begin
@@ -56,7 +43,7 @@ always @(negedge ResetN, posedge BaudOut) begin
                 ActiveFlag  = 1'b1;
             end
             if (ParityType  == 'b00 || ParityType == 'b11 ) begin
-                ParallParOut = ParHolder;
+                ParallParOut = ParityOut;
             end
             else begin
                 ParallParOut = 'b0;

@@ -1,6 +1,6 @@
 //  This module is created by Mohamed Maged And Ali Morgan
 //  Undergraduate ECE student, Alexandria university.
-
+//  Behavioral modelling for the Baud rate generator
 
 module BaudRateGen
     #(parameter Width = 14;)(

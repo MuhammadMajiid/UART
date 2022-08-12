@@ -10,30 +10,28 @@ module ParityUnit(
     input   [1:0]   ParityType,
     output reg  ParityOut
 );
-reg ParityCheck;
 
 //Parity type
 always @(negedge ResetN, ParityType, DataIn) begin
-    ParityCheck  =   ^DataIn;
     if(~ResetN)begin
-      ParityType    =   2'b00;        //No parity
+      ParityOut = (^DataIn)? 1'b0 : 1'b1;        //No parity, Parallel Odd Parity
     end
     else begin
       case (ParityType)
-      2'b00  : ParityOut   =   1'b1;    //No parity
+      2'b00  : begin                   //No parity, Parallel Odd Parity
+        //Parallel Odd parity
+        ParityOut = (^DataIn)? 1'b0 : 1'b1;
+      end
       2'b01  : begin                   //Odd Parity
-        if (ParityCheck)
-            ParityOut   =   1'b0;
-        else 
-            ParityOut   =   1'b1;
+        ParityOut = (^DataIn)? 1'b0 : 1'b1;
       end
       2'b10  : begin                   //Even parity
-        if (ParityCheck)
-            ParityOut   =   1'b1;
-        else
-            ParityOut   =   1'b0;    
+        ParityOut = (^DataIn)? 1'b1 : 1'b0;    
       end
-      2'b11  : ParityOut   =   1'b1;     //No parity
+      2'b11  : begin                  //No parity, Parallel Odd Parity
+        //Parallel Odd parity
+        ParityOut = (^DataIn)? 1'b0 : 1'b1;
+      end    
       endcase
     end
 end
