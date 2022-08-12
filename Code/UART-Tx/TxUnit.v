@@ -7,7 +7,7 @@ module TxUnit(
     input   [1:0]   ParityType, BaudRate,
     input   [10:0]  DataIn,
 
-    output reg  DataOut, ParallParOut, ActiveFlag , DoneFlag
+    output  DataOut, ParallParOut, ActiveFlag , DoneFlag
 );
 
 //interconnection 
@@ -16,7 +16,7 @@ wire    [10:0]  FramOutUnit;
 
 
 //Parity unit instantiation 
-parityUnit Unit1(
+parity Unit1(
     .ResetN(ResetN), .DataIn(DataIn), .ParityType(ParityType),    //inputs
     
     .ParityOut(ParOutUnit)     //output

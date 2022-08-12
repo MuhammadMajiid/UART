@@ -2,9 +2,7 @@
 //  Undergraduate ECE student, Alexandria university.
 //  Simple-parity-check unit uses Odd, Even and no parity methods.
 
-
-
-module ParityUnit(
+module Parity(
     input   [7:0]    DataIn,
     input   ResetN,
     input   [1:0]   ParityType,
