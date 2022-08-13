@@ -1,4 +1,4 @@
-module TxUnitTest ();
+module TxTest ();
 
 
 //regs to derive the inputs 

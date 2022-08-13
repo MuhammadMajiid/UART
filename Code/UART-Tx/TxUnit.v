@@ -12,33 +12,40 @@ module TxUnit(
 
 //interconnection 
 wire    ParOutUnit, BaudOutUnit;
+wire    [7:0]   RegOut;
 wire    [10:0]  FramOutUnit;
 
+//Register Unit
+InReg Unit1(
+    .ResetN(ResetN), .DataIn(DataIn), .DoneFlag(DoneFlag),        //inputs
+
+    .RegIn(RegOut)              //output
+);
 
 //Parity unit instantiation 
-parity Unit1(
-    .ResetN(ResetN), .DataIn(DataIn), .ParityType(ParityType),    //inputs
+parity Unit2(
+    .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType),    //inputs
     
     .ParityOut(ParOutUnit)     //output
 );
 
 //Frame generator unit instantiation
-FrameGenerator Unit2(
-    .ResetN(ResetN), .DataIn(DataIn), .ParityType(ParityType), .StopBits(StopBits), .DataLength(DataLength),
+FrameGenerator Unit3(
+    .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType), .StopBits(StopBits), .DataLength(DataLength),
     .ParityOut(ParOutUnit), .DoneFlag(DoneFlag),    //inputs
     
     .FrameOut(FramOutUnit)     //output
 );
 
 //Baud generator unit instantiation
-BaudGen Unit3(
+BaudGen Unit4(
     .BaudRate(BaudRate), .Clock(Clock), .ResetN(ResetN),        //inputs
     
     .Tick(BaudOutUnit)      //output
 );
 
 //PISO shift register unit instantiation
-PISO Unit4(
+PISO Unit5(
     .ParityType(ParityType), .ResetN(ResetN), .StopBits(StopBits), .DataLength(DataLength), .Send(Send),
     .FrameOut(FramOutUnit), .BaudOut(BaudOutUnit), .ParityOut(ParOutUnit),          //inputs
 

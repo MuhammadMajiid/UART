@@ -5,7 +5,7 @@
 module ParityTest();
 
 //regs
-reg [7:0] DataIn;
+reg [7:0] RegIn;
 reg ResetN;
 reg [1:0] ParityType;
 
@@ -13,7 +13,11 @@ reg [1:0] ParityType;
 wire ParityOut;
 
 //Instatniation of the design module
-Parity ForTest(.*);
+Parity ForTest(
+    .RegIn(RegIn), .ResetN(ResetN), .ParityType(ParityType),
+
+    .ParityOut(ParityOut)
+);
 
 //Reset
 initial begin
@@ -23,11 +27,11 @@ end
 
 //Test
 initial begin
-        DataIn = 8'b00001111;
-    #10 DataIn = 8'b10101111;
-    #10 DataIn = 8'b10101001;
-    #10 DataIn = 8'b10101001;
-    #10 DataIn = 8'b10111101;
+        RegIn = 8'b00001111;
+    #10 RegIn = 8'b10101111;
+    #10 RegIn = 8'b10101001;
+    #10 RegIn = 8'b10101001;
+    #10 RegIn = 8'b10111101;
 end
 
 //Cases
