@@ -1,9 +1,8 @@
 //  This module is created by ALi Morgan, All credits to him.
 
 
-
+`timescale 1ns/1ns
 module TxTest ();
-
 
 //regs to derive the inputs 
 
@@ -11,7 +10,7 @@ reg ResetN ;
 reg StopBits ; 
 reg DataLength ; 
 reg Send ; 
-reg clock ; 
+reg Clock ; 
 
 reg [1:0] ParityType ; 
 reg [1:0] BaudRate ;
@@ -29,7 +28,7 @@ TxUnit TxUT(
     .StopBits(StopBits), 
     .DataLength(DataLength), 
     .Send(Send), 
-    .clock(clock), 
+    .Clock(Clock), 
     .ParityType(ParityType), 
     .BaudRate(BaudRate), 
     .DataIn(DataIn), 
@@ -68,10 +67,10 @@ initial begin
     end 
 end
 //50Mhz clock 20ns period (10ns low - 10ns high )
-always begin
-    clock = 0 ; 
-    #10 ; 
-    clock = 1 ; 
-    #10 ; 
+initial begin
+    Clock = 0 ;
+    forever begin
+        #10 Clock = ~Clock;
+    end 
 end
 endmodule

@@ -6,7 +6,7 @@ module BaudGen
     #(parameter integer CountBits = 'd14)(
     input   ResetN, Clock,Enable,
     input   [1:0]  BaudRate,
-    output  Tick
+    output reg Tick
 );
 //Internal declarations
 reg [CountBits - 1 : 0] Qnext, Qreg = 'b0, FinalValue;
@@ -40,9 +40,9 @@ end
 assign Done = (Qreg == FinalValue) ;
 always @(*) begin
     Qnext <= Done? 'b0 : Qreg + 1;
+    Tick = Done? 1'b1 : 1'b0;
 end
 
-//Output
-assign Tick <= Done? 1'b1 : 1'b0;
+
 
 endmodule

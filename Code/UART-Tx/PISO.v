@@ -24,36 +24,38 @@ integer   SerialPos    = 0;
 always @(negedge ResetN, posedge BaudOut) begin
     
     if (~ResetN) begin
-    DataOut         <= 'b1;
-    ParallParOut    <= 'b0;
-    ActiveFlag      <= 'b0;
-    DoneFlag        <= 'b1;
+    DataOut         =  'b1;
+    ParallParOut    = 1'b0;
+    ActiveFlag      = 1'b0;
+    DoneFlag        = 1'b1;
+    SerialPos       =    0;
     end
     else begin
         if (Send) begin
             if (SerialPos == (Bits - 1)) begin
-                DoneFlag    <= 1'b1;
-                ActiveFlag  <= 1'b0;
-                SerialPos   <= 0;
+                DoneFlag    = 1'b1;
+                ActiveFlag  = 1'b0;
+                SerialPos   = 0;
             end
             else begin
-                DataOut     <= FrameOut[SerialPos];
-                SerialPos   <= SerialPos + 1;
-                DoneFlag    <= 1'b0;
-                ActiveFlag  <= 1'b1;
+                DataOut     = FrameOut[SerialPos];
+                SerialPos   = SerialPos + 1;
+                DoneFlag    = 1'b0;
+                ActiveFlag  = 1'b1;
             end
-            if (ParityType  == 'b00 || ParityType == 'b11 ) begin
-                ParallParOut <= ParityOut;
+            if (ParityType  == 2'b00 || ParityType == 2'b11 ) begin
+                ParallParOut = ParityOut;
             end
             else begin
-                ParallParOut <= 'b0;
+                ParallParOut = 1'b0;
             end
         end
         else begin
-        DataOut          <= 'b1;
-        ParallParOut     <= 'b0;
-        DoneFlag         <= 1'b1;
-        ActiveFlag       <= 1'b0;
+        DataOut          =  'b1;
+        ParallParOut     = 1'b0;
+        DoneFlag         = 1'b1;
+        ActiveFlag       = 1'b0;
+        SerialPos        =    0;
         end
     end  
 end

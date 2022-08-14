@@ -1,7 +1,7 @@
 //  This module is created by Mohamed Maged
 //  Undergraduate ECE student, Alexandria university.
-//  Test Bech for the parity module
-
+//  Testbench for the parity module
+`timescale 1ns/1ns
 module ParityTest();
 
 //regs
@@ -27,7 +27,8 @@ end
 
 //Test
 initial begin
-        RegIn = 8'b00001111;
+    RegIn = 8'b00010111;
+    #10 RegIn = 8'b00001111;
     #10 RegIn = 8'b10101111;
     #10 RegIn = 8'b10101001;
     #10 RegIn = 8'b10101001;

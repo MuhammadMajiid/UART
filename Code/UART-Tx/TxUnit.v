@@ -5,7 +5,7 @@
 module TxUnit(
     input   ResetN, StopBits, DataLength, Send, Clock,
     input   [1:0]   ParityType, BaudRate,
-    input   [10:0]  DataIn,
+    input   [7:0]  DataIn,
 
     output  DataOut, ParallParOut, ActiveFlag , DoneFlag
 );
@@ -23,7 +23,7 @@ InReg Unit1(
 );
 
 //Parity unit instantiation 
-parity Unit2(
+Parity Unit2(
     .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType),    //inputs
     
     .ParityOut(ParOutUnit)     //output
@@ -32,16 +32,16 @@ parity Unit2(
 //Frame generator unit instantiation
 FrameGenerator Unit3(
     .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType), .StopBits(StopBits), .DataLength(DataLength),
-    .ParityOut(ParOutUnit), .DoneFlag(DoneFlag),    //inputs
+    .ParityOut(ParOutUnit),    //inputs
     
     .FrameOut(FramOutUnit)     //output
 );
 
 //Baud generator unit instantiation
-BaudGen Unit4(
+BaudRateGen Unit4(
     .BaudRate(BaudRate), .Clock(Clock), .ResetN(ResetN),        //inputs
     
-    .Tick(BaudOutUnit)      //output
+    .BaudOut(BaudOutUnit)      //output
 );
 
 //PISO shift register unit instantiation

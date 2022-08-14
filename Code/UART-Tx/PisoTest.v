@@ -1,7 +1,7 @@
 //                       ************************************** This module is created by Mohamed Maged **************************************
 //Chipions program's final project for phase(001) "verilog", UART-Tx.
 //Undergraduate student, ECE department, Alexandria university.
-
+`timescale 1ns/1ns
 module PisoTest;
 
 //Test Inputs

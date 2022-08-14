@@ -4,9 +4,9 @@
 
 module Parity(
     input   [7:0]    RegIn,
-    input   ResetN,
-    input   [1:0]   ParityType,
-    output reg  ParityOut
+    input            ResetN,
+    input   [1:0]    ParityType,
+    output reg       ParityOut
 );
 
 //Parity type
