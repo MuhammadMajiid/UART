@@ -5,11 +5,11 @@
 module InReg(
     input   DoneFlag, ResetN,
     input   [7:0] DataIn,
-    output  [7:0] RegIn
+    output  [7:0] RegOut
 );
 reg [7:0] Holder;
 
-always @(DoneFlag, negedge ResetN) begin
+always @(posedge DoneFlag, negedge ResetN) begin
     if (~ResetN) begin
         Holder <= 8'b0;
     end

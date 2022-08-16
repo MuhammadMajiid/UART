@@ -1,50 +1,41 @@
-//  This module is created by ALi Morgan, All credits to him.
-
+//  This module is created by Mohamed Maged
+//  Undergraduate ECE student, Alexandria university.
+//  This is the testbench for the top module for the UART-Tx Unit.
 
 `timescale 1ns/1ns
 module TxTest ();
 
-//regs to derive the inputs 
+//Regs 
+reg ResetN, StopBits, DataLength, Send, Clock; 
+reg [1:0] ParityType, BaudRate;
+reg [7:0] DataIn; 
 
-reg ResetN ;
-reg StopBits ; 
-reg DataLength ; 
-reg Send ; 
-reg Clock ; 
+//wires
+wire DataOut, ParallParOut, ActiveFlag, DoneFlag; 
 
-reg [1:0] ParityType ; 
-reg [1:0] BaudRate ;
-reg [7:0] DataIn ; 
-
-//wires to recive the output 
-
-wire DataOut ; 
-wire ParallParOut; 
-wire ActiveFlag ; 
-wire DoneFlag; 
-
+//Instance for the design module
 TxUnit TxUT(
-    .ResetN(ResetN), 
-    .StopBits(StopBits), 
-    .DataLength(DataLength), 
-    .Send(Send), 
-    .Clock(Clock), 
-    .ParityType(ParityType), 
-    .BaudRate(BaudRate), 
-    .DataIn(DataIn), 
-    .DataOut(DataOut), 
-    .ParallParOut(ParallParOut),
-    .ActiveFlag(ActiveFlag), 
-    .DoneFlag(DoneFlag)
+    .ResetN(ResetN), .StopBits(StopBits), .DataLength(DataLength), .Send(Send), 
+    .Clock(Clock), .ParityType(ParityType), .BaudRate(BaudRate), .DataIn(DataIn), //Inputs
+
+
+    .DataOut(DataOut), .ParallParOut(ParallParOut), .ActiveFlag(ActiveFlag), .DoneFlag(DoneFlag) //outputs
 );
-//stop bits + data l cannot be => 00 , 11
+
+//50Mhz Clock
+initial begin
+    Clock = 1'b0;
+    forever #10 Clock = ~Clock; 
+end
+
 integer  i ;
 initial begin
     //reseting the system for 10ns 
     Send = 0 ; 
     ResetN = 0 ; 
     #10 ; 
-    ResetN = 1 ; 
+    ResetN = 1 ;
+    Send = 1 ; 
 
     StopBits = 0 ; // 1 stop bit 
     DataLength = 1 ; // 8 bits
@@ -60,17 +51,63 @@ initial begin
             StopBits = 1 ; 
             DataLength = 0 ; 
         end
+        else begin
+            StopBits    = 0;
+            DataLength  = 1;
+        end
         Send = 1 ; //Send data 
         #(4560000 / (i + 1)) ; 
         Send = 0 ; //stop Sending
         #1000;
     end 
 end
-//50Mhz clock 20ns period (10ns low - 10ns high )
+
+/*
+//Reset
 initial begin
-    Clock = 0 ;
-    forever begin
-        #10 Clock = ~Clock;
+          ResetN = 1'b0; 
+    #10   ResetN = 1'b1; 
+    #50000  ResetN = 1'b1;
+    #40000  ResetN = 1'b1;
+end
+
+//Send signal
+initial begin
+          Send = 1'b0;
+    #10   Send = 1'b1;
+    #50000 Send = 1'b0;
+    #40000  Send = 1'b1;
+end
+
+//initialization 
+initial
+fork
+    StopBits    = 1'b0; 
+    DataLength  = 1'b1;
+    ParityType  = 2'b00; 
+    BaudRate    = 2'b00;
+    DataIn      = 8'b0101_1010;
+join
+
+//Test
+integer  Dummy;
+initial begin
+
+//test for 4 speeds with 4 parity types
+    for (Dummy = 0; Dummy < 4 ; Dummy = Dummy + 1) begin 
+        BaudRate    = Dummy; 
+        ParityType  = Dummy; 
+        if (Dummy > 1) begin
+            StopBits    = 1'b1; 
+            DataLength  = 1'b0; 
+        end
+        else begin
+            StopBits    = 0;
+            DataLength  = 1;
+        end
+        #(4560000 / (Dummy + 1)) ; 
     end 
 end
+*/
+
 endmodule

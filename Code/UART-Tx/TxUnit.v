@@ -12,26 +12,26 @@ module TxUnit(
 
 //interconnection 
 wire    ParOutUnit, BaudOutUnit;
-wire    [7:0]   RegOut;
+wire    [7:0]   RegOutUnit;
 wire    [10:0]  FramOutUnit;
 
 //Register Unit
 InReg Unit1(
     .ResetN(ResetN), .DataIn(DataIn), .DoneFlag(DoneFlag),        //inputs
 
-    .RegIn(RegOut)              //output
+    .RegOut(RegOutUnit)              //output
 );
 
 //Parity unit instantiation 
 Parity Unit2(
-    .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType),    //inputs
+    .ResetN(ResetN), .RegOut(RegOutUnit), .ParityType(ParityType),    //inputs
     
     .ParityOut(ParOutUnit)     //output
 );
 
 //Frame generator unit instantiation
 FrameGenerator Unit3(
-    .ResetN(ResetN), .RegIn(RegOut), .ParityType(ParityType), .StopBits(StopBits), .DataLength(DataLength),
+    .ResetN(ResetN), .RegOut(RegOutUnit), .ParityType(ParityType), .StopBits(StopBits), .DataLength(DataLength),
     .ParityOut(ParOutUnit),    //inputs
     
     .FrameOut(FramOutUnit)     //output
