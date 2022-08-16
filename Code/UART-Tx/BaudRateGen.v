@@ -30,12 +30,12 @@ always @(negedge ResetN, posedge Clock) begin
     end
     else begin
         if (ClockTicks == FinalValue) begin
-        ClockTicks <= 0; 
-        BaudOut    <= ~BaudOut; 
+            ClockTicks <= 0; 
+            BaudOut    <= ~BaudOut; 
         end 
         else begin
-        ClockTicks <= ClockTicks + 1;
-        BaudOut    <= BaudOut;
+            ClockTicks <= ClockTicks + 1;
+            BaudOut    <= BaudOut;
         end
     end 
     

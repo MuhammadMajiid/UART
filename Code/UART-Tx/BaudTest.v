@@ -1,4 +1,4 @@
-//  This module is created by Mohamed Maged
+//  This module is created by Ali Morgan
 //  Undergraduate ECE student, Alexandria university.
 
 `timescale 1ns/1ns
@@ -28,13 +28,13 @@ end
 
 //Baud
 initial begin
-      BaudRate = 2'b00;        
-    #250000;
-     BaudRate = 2'b01;
+      BaudRate = 2'b11;        
     #250000;
      BaudRate = 2'b10;
     #250000;
-     BaudRate = 2'b11;
+     BaudRate = 2'b01;
+    #250000;
+     BaudRate = 2'b00;
     #250000;
 end
 
