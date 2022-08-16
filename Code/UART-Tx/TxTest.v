@@ -1,4 +1,4 @@
-//  This module is created by Mohamed Maged
+//  This module is created by Ali Morgan, credits to him
 //  Undergraduate ECE student, Alexandria university.
 //  This is the testbench for the top module for the UART-Tx Unit.
 
