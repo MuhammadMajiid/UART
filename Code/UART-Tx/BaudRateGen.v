@@ -9,7 +9,7 @@ module BaudRateGen(
     output reg BaudOut
 );
 //Internal declarations
-integer ClockTicks, FinalValue; 
+reg [13 : 0] ClockTicks, FinalValue; 
 
 //BaudRate 4-1 Mux
 always @(BaudRate) begin
