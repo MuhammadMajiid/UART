@@ -23,15 +23,19 @@ end
 //Reset and Enable
 initial begin
         ResetN = 1'b0;
-    #5  ResetN = 1'b1;
+    #10  ResetN = 1'b1;
 end
 
 //Baud
 initial begin
-            BaudRate = 2'b11;        
-    #500000 BaudRate = 2'b01;
-    #500000 BaudRate = 2'b10;
-    #500000 BaudRate = 2'b00;
+      BaudRate = 2'b00;        
+    #250000;
+     BaudRate = 2'b01;
+    #250000;
+     BaudRate = 2'b10;
+    #250000;
+     BaudRate = 2'b11;
+    #250000;
 end
 
 endmodule
