@@ -2,7 +2,7 @@
 //  Undergraduate ECE student, Alexandria university.
 
 `timescale 1ns/1ns
-module BaudTest();
+module SampleTest();
 
 //Regs
 reg ResetN, Clock, OverSel;
@@ -29,21 +29,21 @@ end
 //Baud
 initial begin
     {OverSel,BaudRate} = 3'b111;        
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b110;
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b101;
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b100;
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b011;        
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b010;
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b001;
-    #250000;
+    #1000000;
     {OverSel,BaudRate} = 3'b000;
-    #250000;
+    #1000000;
 end
 
 endmodule
