@@ -9,8 +9,7 @@ module DeFrame(
 
     output reg ParityBit,
     //For output we have two options either 8-bits data or 7-bits data
-    output reg [7:0] Raw8Data,
-    output reg [6:0] Raw7Data
+    output reg [7:0] RawData,
 );
 //Internals
 reg [8:0] DataHolder;                       //Holds the data plus the parity bit
@@ -40,10 +39,10 @@ end
 //Output Data logic
 always @(*) begin
     if (DataLength) begin
-        Raw8Data = DataHolder[7:0];
+        RawData = DataHolder[7:0];
     end
     else begin
-        Raw7Data = DataHolder[6:0];
+        RawData = {1'b0, DataHolder[6:0]};
     end
 end
 
