@@ -1,7 +1,7 @@
 module SIPO(
-    input DataTx, Recieve, ResetN, BaudOut,
+    input DataTx, ResetN, BaudOut,
     
-    output DoneFlag,
+    output RecievedFlag,
     output [10:0] DataParl
 );
 //Internal
@@ -14,19 +14,13 @@ always @(posedge BaudOut, negedge ResetN) begin
       Count   <= 4'd0;
     end
     else begin
-      if(Recieve)begin
-        Shifter <= {Shifter, DataTx};
-        Count   <= Count + 1'd1;
-      end
-      else begin
-        Shifter <= Shifter;
-        Count   <= Count;
-      end
-    end
+      Shifter <= {Shifter, DataTx};
+      Count   <= Count + 1'd1;
+  end
 end
 
 //DoneFlag assignment
-assign DoneFlag = (Count == 4'd11);
+assign RecievedFlag = (Count == 4'd11);
 
 //Output
 assign DataParl = Shifter;
