@@ -23,7 +23,7 @@ wire BaudSig;
 wire DeParBit;
 
 //  Clocking Unit Instance
-Sampling ForDesign(
+Sampling Unit1(
     //  Inputs
     .ResetN(ResetN), .Clock(Clock), .DataTx(DataTx), .BaudRate(BaudRate),
     //  Output
@@ -31,7 +31,7 @@ Sampling ForDesign(
 );
 
 //  Shift Register Unit Instance
-SIPO ForDesign(
+SIPO Unit2(
     //  Inputs
     .ResetN(ResetN), .DataTx(DataTx), .Recieve(DoneFlag), .BaudOut(BaudSig),
     //  Outputs
@@ -39,7 +39,7 @@ SIPO ForDesign(
 );
 
 //  DeFramer Unit Instance
-DeFrame ForDesign(
+DeFrame Unit3(
     //  Inputs
     .ResetN(ResetN), .RecievedFlag(RFlag), .ParityType(ParityType), .DataParl(DataP),
     //  Outputs
@@ -47,7 +47,7 @@ DeFrame ForDesign(
 );
 
 //  Error Checking Unit Instance
-ErrorCheck ForDesign(
+ErrorCheck Unit4(
     //  Inputs
     .ResetN(ResetN), .ParityBit(DeParBit), .ParityType(ParityType), .RawData(Data),
     //  Output
