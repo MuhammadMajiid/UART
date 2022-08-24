@@ -11,7 +11,10 @@ module RxUnit(
     input [1:0] ParityType,  //  Parity type agreed upon by the Tx and Rx units.
     input [1:0] BaudRate,    //  Baud Rate agreed upon by the Tx and Rx units.
 
-    output ErrorFlag,        //  Outputs logic high if there is an error.
+    output [2:0] ErrorFlag,
+    //  Consits of three bits, each bit is a flag for an error
+    //  ErrorFlag[0] ParityError flag, ErrorFlag[1] StartError flag,
+    //  ErrorFlag[2] StopError flag.
     output [7:0] Data        //  The 8-bits data separated from the data frame.
 );
 
