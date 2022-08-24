@@ -12,7 +12,6 @@ module RxUnit(
     input [1:0] BaudRate,    //  Baud Rate agreed upon by the Tx and Rx units.
 
     output ErrorFlag,        //  Outputs logic high if there is an error.
-    output DoneFlag,         //  Outputs logic high to recieve new frame.
     output [7:0] Data        //  The 8-bits data separated from the data frame.
 );
 
@@ -33,7 +32,7 @@ Sampling Unit1(
 //  Shift Register Unit Instance
 SIPO Unit2(
     //  Inputs
-    .ResetN(ResetN), .DataTx(DataTx), .Recieve(DoneFlag), .BaudOut(BaudSig),
+    .ResetN(ResetN), .DataTx(DataTx), .BaudOut(BaudSig),
     //  Outputs
     .RecievedFlag(RFlag), .DataParl(DataP)
 );
@@ -43,7 +42,7 @@ DeFrame Unit3(
     //  Inputs
     .ResetN(ResetN), .RecievedFlag(RFlag), .ParityType(ParityType), .DataParl(DataP),
     //  Outputs
-    .DoneFlag(DoneFlag), .ParityBit(DeParBit), .RawData(Data)
+    .ParityBit(DeParBit), .RawData(Data)
 );
 
 //  Error Checking Unit Instance

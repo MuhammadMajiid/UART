@@ -6,10 +6,15 @@
 module ErrorCheck(
     input ResetN,             //  Active low reset.
     input ParityBit,          //  The parity bit from the frame for comparison.
+    input StartBit,           //  The Start bit from the frame for comparison.
+    input StopBit,            //  The Stop bit from the frame for comparison.
     input [1:0] ParityType,   //  Parity type agreed upon by the Tx and Rx units.
     input [7:0] RawData,      //  The 8-bits data separated from the data frame.
 
-    output reg ErrorFlag      //  Outputs logic high if there is an error
+    //  Consits of three bits, each bit is a flag for an error
+    //  ErrorFlag[0] ParityError flag, ErrorFlag[1] StartError flag,
+    //  ErrorFlag[2] StopError flag.
+    output reg [2:0] ErrorFlag
 );
 
 //  Internal
@@ -19,8 +24,9 @@ reg ErrorParity;
 localparam Odd       = 2'b01,
            Even      = 2'b10,
            NoParity1 = 2'b00, 
-           Noparity2 =2'b11;
+           Noparity2 = 2'b11;
 
+//  Parity Check logic
 always @(negedge ResetN, RawData, ParityBit, ParityType) begin
     if(~ResetN) begin
         ErrorFlag   <= 1'b0;
@@ -53,8 +59,10 @@ always @(negedge ResetN, RawData, ParityBit, ParityType) begin
     end 
 end
 
-//ErrorFlag Assignment
+//  Output logic
 always @(*) begin
-  assign ErrorFlag  = (ErrorParity == ParityBit);
+  ErrorFlag[0] <= (ErrorParity != ParityBit);
+  ErrorFlag[1] <= (StartBit != 1'b0);
+  ErrorFlag[2] <= (StopBit != 1'b1);
 end
 endmodule

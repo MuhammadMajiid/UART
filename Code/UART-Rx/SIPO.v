@@ -7,11 +7,10 @@
 module SIPO(
     input ResetN,   //  Active low reset.
     input DataTx,   //  Serial Data recieved from the transmitter.
-    input Recieve,  //  Enable signal assigned to DoneFlag in the deframe unit.
     input BaudOut,  //  The clocking input comes from the sampling unit.
 
-    output RecievedFlag,      //  outputs a signal enables the deframe unit.
-    output [10:0] DataParl    //  outputs the 11-bit parallel frame.
+    output reg RecievedFlag,      //  outputs a signal enables the deframe unit.
+    output reg [10:0] DataParl    //  outputs the 11-bit parallel frame.
 );
 //  Internal
 reg [10:0] Shifter;
@@ -25,7 +24,7 @@ always @(posedge BaudOut, negedge ResetN) begin
     end
     else begin
       if(Recieve)begin
-        Shifter <= {Shifter, DataTx};
+        Shifter <= {Shifter,DataTx};
         Count   <= Count + 1'd1;
       end
       else begin
@@ -35,9 +34,15 @@ always @(posedge BaudOut, negedge ResetN) begin
     end
 end
 
-//  DoneFlag assignment
-assign RecievedFlag = (Count == 4'd11);
+//  Output logic
+always @(*) begin
+  //  Output
+  assign DataParl = Shifter;
 
-//  Output
-assign DataParl = Shifter;
+  //  DoneFlag assignment
+  assign RecievedFlag = (Count == 4'd11);
+end
+
+
+
 endmodule
