@@ -8,7 +8,6 @@ module SipoTest;
 //  Regs to drive inputs
 reg ResetN;
 reg DataTx;
-reg Recieve;
 reg BaudOut;
 
 //  Wires to show outputs
@@ -19,7 +18,6 @@ wire [10:0] DataParl;
 SIPO ForTest(
     .ResetN(ResetN),
     .DataTx(DataTx),
-    .Recieve(Recieve),
     .BaudOut(BaudOut),
 
     .RecievedFlag(RecievedFlag),
@@ -40,14 +38,6 @@ initial begin
     #5 ResetN = 1'b1;
     #230 ResetN = 1'b0;
     #5 ResetN = 1'b1;
-end
-
-//  Enable
-initial begin
-    Recieve = 1'b0;
-    #5 Recieve = 1'b1;
-    #300 Recieve = 1'b0;
-    #20 Recieve = 1'b1;
 end
 
 //  Test 

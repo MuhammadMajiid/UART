@@ -13,9 +13,10 @@ module Sampling(
 );
 
 //  Internal declarations
-reg [10:0] ClockTicks, FinalValue;
+reg [9:0]  ClockTicks;
+reg [9:0]  FinalValue;
 reg [3:0]  FrameCounter;
-reg [2:0]  StopCount;
+reg [3:0]  StopCount;
 reg [1:0]  NextState;
 
 
@@ -34,11 +35,11 @@ localparam Rate2400      = 2'b00,
 //  BaudRate 4-1 Mux
 always @(BaudRate) begin
     case (BaudRate)
-        Rate2400   : FinalValue = 1302;      //8 * 2400 BaudRate.
-        Rate4800   : FinalValue = 651;       //8 * 4800 BaudRate.
-        Rate9600   : FinalValue = 326;       //8 * 9600 BaudRate.
-        Rate19200  : FinalValue = 163;       //8 * 19200 BaudRate.
-        default    : FinalValue = 0;         //The systems original Clock.
+        Rate2400   : FinalValue = 651;      //16 * 2400 BaudRate.
+        Rate4800   : FinalValue = 326;      //16 * 4800 BaudRate.
+        Rate9600   : FinalValue = 163;      //16 * 9600 BaudRate.
+        Rate19200  : FinalValue = 82;       //16 * 19200 BaudRate.
+        default    : FinalValue = 0;        //The systems original Clock.
     endcase
 end
 
@@ -57,19 +58,17 @@ always @(negedge ResetN, posedge Clock) begin
 //  The Idle state keeps the outputing the 16*BaudRate clock
 //  untill sensing the start bit
         IDLE : begin
-          FrameCounter <= 0;
           if(ClockTicks == FinalValue) begin
+            BaudOut    <= 0;
             StopCount  <= StopCount + 1;
             ClockTicks <= 0;
           end
           else begin
             ClockTicks <= ClockTicks +1;
           end
-          if(StopCount[2]) begin      
-            //  Condition equivalent to StopCount == 3'd4 == 3'b0(1)00
-            //  For simplicity of the hardware instead of comparator
+          if(StopCount == 4'd15) begin
             BaudOut   <= ~BaudOut;
-            StopCount <= 3'd0;
+            StopCount <= 4'd0;
             if(~DataTx) begin
               NextState <= Center;
             end
@@ -79,28 +78,29 @@ always @(negedge ResetN, posedge Clock) begin
           end
           else begin
             NextState <= IDLE;
+            BaudOut   <= BaudOut;
           end
         end
 
-//  The Center state captures the start bit in its half duration 8*Baudrate clock
+//  The Center state captures the start bit in its half duration
 //  thus centring the baudout signal
         Center : begin
           if(ClockTicks == FinalValue) begin
-            StopCount <= StopCount + 1;
+            BaudOut    <= 0;
+            StopCount  <= StopCount + 1;
             ClockTicks <= 0;
           end
           else begin
             ClockTicks <= ClockTicks +1;
           end
-          if(StopCount[1] && (~StopCount[0])) begin     
-            //  Condition equivalent to StopCount == 3'd2 ==3'b0(10)
-            //  For simplicity of the hardware instead of comparator
+          if(StopCount == 4'd7) begin     
             BaudOut   <= ~BaudOut;
             NextState <= FrameTime;
             StopCount <= 4'd0;
           end
           else begin
             NextState <= Center;
+            BaudOut   <= BaudOut;
           end
         end
 
@@ -109,27 +109,29 @@ always @(negedge ResetN, posedge Clock) begin
 //  outputing 16*BaudRate clock
         FrameTime : begin
           if(ClockTicks == FinalValue) begin
+            BaudOut    <= 0;
             StopCount  <= StopCount + 1;
             ClockTicks <= 0;
           end
           else begin
             ClockTicks <= ClockTicks +1;
           end
-          if(StopCount[2]) begin
+          if(StopCount == 4'd15) begin
             BaudOut      <= ~BaudOut;
             FrameCounter <= FrameCounter + 1;
             StopCount    <= 4'd0;
-            if(FrameCounter[3] && (FrameCounter[1])) begin        
-              //  Condition equivalent to FrameCounter == 4'd10 == 4'b(1)0(1)0
-              //  For simplicity of the hardware instead of comparator
-              NextState <= IDLE;
+            if(FrameCounter == 4'd10) begin
+              NextState    <= IDLE;
+              FrameCounter <= 0;
             end
             else begin
-              NextState <= FrameTime;
+              NextState    <= FrameTime;
+              FrameCounter <= FrameCounter;
             end
           end
           else begin
             NextState <= FrameTime;
+            BaudOut   <= BaudOut;
           end
         end
 

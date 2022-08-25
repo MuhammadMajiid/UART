@@ -23,26 +23,26 @@ always @(posedge BaudOut, negedge ResetN) begin
       Count   <= 4'd0;
     end
     else begin
-      if(Recieve)begin
-        Shifter <= {Shifter,DataTx};
-        Count   <= Count + 1'd1;
-      end
-      else begin
-        Shifter <= Shifter;
-        Count   <= Count;
-      end
+      Shifter <= {Shifter,DataTx};
+      Count   <= Count + 1'd1;
     end
 end
 
 //  Output logic
 always @(*) begin
-  //  Output
+
+  //  Output Data
   assign DataParl = Shifter;
 
-  //  DoneFlag assignment
-  assign RecievedFlag = (Count == 4'd11);
+  //  RecievedFlag assignment
+  if(Count == 4'd11) begin
+    RecievedFlag = 1'b1;
+    Count = 4'd0;
+  end
+  else begin
+    RecievedFlag = 1'b0;
+    Count = Count;
+  end
 end
-
-
 
 endmodule
