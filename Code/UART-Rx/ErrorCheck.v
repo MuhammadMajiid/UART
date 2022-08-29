@@ -27,30 +27,37 @@ localparam Odd       = 2'b01,
            Noparity2 = 2'b11;
 
 //  Parity Check logic
-always @(negedge ResetN, RawData, ParityBit, ParityType) begin
-    if(~ResetN) begin
-        ErrorFlag   <= 1'b0;
-        ErrorParity <= 1'b0;
+always @(negedge ResetN, RawData, ParityBit, ParityType)
+begin
+    if(~ResetN)
+    begin
+        ErrorFlag   <= {3{1'b0}};
+        ErrorParity <= 1'b1;
     end
-    else begin
-      if ((ParityType == NoParity1) || (ParityType == Noparity2)) begin
+    else
+    begin
+      if ((ParityType == NoParity1) || (ParityType == Noparity2))
+      begin
         ErrorParity <= 1'b1;
         //  No parity, reset to 0 to not meet the condition of the error flag
         //  because in these cases and the reset case 
         //  the parity bit will be recieved as "1"
       end
-      else begin
+      else
+      begin
         case (ParityType)
-
-           Odd : begin
+           Odd : 
+           begin
              ErrorParity <= (^RawData)? 1'b0 : 1'b1;
            end
 
-           Even : begin
+           Even : 
+           begin
              ErrorParity <= (^RawData)? 1'b1 : 1'b0;
            end
 
-            default: begin
+            default: 
+            begin
               ErrorParity <= 1'b0;      
               //  No Parity
             end
@@ -60,7 +67,8 @@ always @(negedge ResetN, RawData, ParityBit, ParityType) begin
 end
 
 //  Output logic
-always @(*) begin
+always @(*) 
+begin
   ErrorFlag[0] <= (ErrorParity != ParityBit);
   ErrorFlag[1] <= (StartBit != 1'b0);
   ErrorFlag[2] <= (StopBit != 1'b1);

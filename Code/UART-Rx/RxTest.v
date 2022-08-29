@@ -1,7 +1,7 @@
 //  This module is created by Mohamed Maged.
 //  Undergraduate ECE student, Alexandria university.
 //  This is the TestBench for Top module for the Reciever unit.
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 module RxTest;
 
 //  Regs to drive inputs
@@ -41,9 +41,24 @@ initial begin
     end
 end
 
-//  Test
+//  Test for 9600 BaudRate
 initial begin
-    
+    BaudRate = 2'b10;
+    //  Testing with odd parity
+    ParityType = 2'b01;
+    //  Data for test
+    //  Data frame of 110101010
+    //  with odd parity, 1 stop bit
+    //  Sent at baud rate 9600
+    DataTx = 1'b1;
+    //  Idle at first
+    repeat(10)
+    begin
+      #104166.667 DataTx = ~DataTx;
+    end
+    //  Stop bit
+    #104166.667;
+    DataTx = 1'b1;
 end
 
 endmodule

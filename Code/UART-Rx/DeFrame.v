@@ -15,25 +15,32 @@ module DeFrame(
 );
 
 //  -Deframing- Output Data & parity bit logic
-always @(negedge ResetN, DataParl) begin
-    if(~ResetN)begin
-      RawData   <= 8'b1;
+always @(negedge ResetN, DataParl)
+begin
+    if(~ResetN)
+    begin
+      RawData   <= {8{1'b1}};
       ParityBit <= 1'b1;
       StartBit  <= 1'b0;
       StopBit   <= 1'b1;
     end
-    else if(RecievedFlag) begin
-      RawData   <= DataParl[8:1];
-      ParityBit <= DataParl[9];
-      StartBit  <= DataParl[0];
-      StopBit   <= DataParl[10];
+    else 
+    begin
+      if(RecievedFlag)
+      begin
+        RawData   <= DataParl[9:2];
+        ParityBit <= DataParl[1];
+        StartBit  <= DataParl[10];
+        StopBit   <= DataParl[0];
       //  Truncates the Start and Stop bits
-    end
-    else begin
-      RawData   <= RawData;
-      ParityBit <= ParityBit;
-      StartBit  <= StartBit;
-      StopBit   <= StopBit;
+      end
+      else
+      begin
+        RawData   <= RawData;
+        ParityBit <= ParityBit;
+        StartBit  <= StartBit;
+        StopBit   <= StopBit;
+      end
     end
 end
 endmodule

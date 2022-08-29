@@ -19,15 +19,20 @@ module RxUnit(
 );
 
 //  Intermediate wires
-wire [10:0] DataP;
-wire RFlag;
-wire BaudSig;
-wire DeParBit;
+wire BaudSig;      //  The clocking signal from the baud generator.
+wire [10:0] DataP; //  Data parallel comes from the SIPO unit.
+wire RFlag;        //  The Recieved-Enabling flag from SIPO unit to DeFrame unit.
+wire DeParBit;     //  The Parity bit from the Deframe unit to the ErrorCheck unit.
+wire DeStrtBit;    //  The Start bit from the Deframe unit to the ErrorCheck unit.
+wire DeStpBit;     //  The Stop bit from the Deframe unit to the ErrorCheck unit.
 
 //  Clocking Unit Instance
-Sampling Unit1(
+BaudGen Unit1(
     //  Inputs
-    .ResetN(ResetN), .Clock(Clock), .DataTx(DataTx), .BaudRate(BaudRate),
+    .ResetN(ResetN),
+    .Clock(Clock),
+    .BaudRate(BaudRate),
+
     //  Output
     .BaudOut(BaudSig)
 );
@@ -35,23 +40,39 @@ Sampling Unit1(
 //  Shift Register Unit Instance
 SIPO Unit2(
     //  Inputs
-    .ResetN(ResetN), .DataTx(DataTx), .BaudOut(BaudSig),
+    .ResetN(ResetN),
+    .DataTx(DataTx),
+    .BaudOut(BaudSig),
+
     //  Outputs
-    .RecievedFlag(RFlag), .DataParl(DataP)
+    .RecievedFlag(RFlag),
+    .DataParl(DataP)
 );
 
 //  DeFramer Unit Instance
 DeFrame Unit3(
     //  Inputs
-    .ResetN(ResetN), .RecievedFlag(RFlag), .ParityType(ParityType), .DataParl(DataP),
+    .ResetN(ResetN),
+    .RecievedFlag(RFlag),
+    .DataParl(DataP),
+    
     //  Outputs
-    .ParityBit(DeParBit), .RawData(Data)
+    .ParityBit(DeParBit),
+    .StartBit(DeStrtBit),
+    .StopBit(DeStpBit),
+    .RawData(Data)
 );
 
 //  Error Checking Unit Instance
 ErrorCheck Unit4(
     //  Inputs
-    .ResetN(ResetN), .ParityBit(DeParBit), .ParityType(ParityType), .RawData(Data),
+    .ResetN(ResetN),
+    .ParityBit(DeParBit),
+    .StartBit(DeStrtBit),
+    .StopBit(DeStpBit),
+    .ParityType(ParityType),
+    .RawData(Data),
+
     //  Output
     .ErrorFlag(ErrorFlag)
 );
