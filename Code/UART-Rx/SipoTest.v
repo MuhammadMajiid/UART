@@ -2,7 +2,7 @@
 //  Undergraduate ECE student, Alexandria university.
 //  A TestBench module code for a Serial-In-Parallel-Out shift register,
 
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 module SipoTest;
 
 //  Regs to drive inputs
@@ -24,38 +24,38 @@ SIPO ForTest(
     .DataParl(DataParl)
 );
 
-//  System clock 50MHz
-initial begin
+//  System clock is Baud clock
+//  Testing the most common BaudRate 9600 bps
+//  16*9600 for oversampling protocol
+initial 
+begin
     BaudOut = 1'b0;
     forever begin
-        #10 BaudOut = ~BaudOut;
+        #3255.208 BaudOut = ~BaudOut;
     end
 end
 
 //  Resetting the system
-initial begin
+initial 
+begin
     ResetN = 1'b0;
-    #5 ResetN = 1'b1;
-    #230 ResetN = 1'b0;
-    #5 ResetN = 1'b1;
+    #100 ResetN = 1'b1;
 end
 
 //  Test 
-initial begin
-    //  Data frame of 01010101010
+initial 
+begin
+    //  Data frame of 11010101010
+    //  Sent at baud rate 9600
     DataTx = 1'b1;
-    repeat(11)
+    //  Idle at first
+    repeat(10)
     begin
-      #10 DataTx = ~DataTx;
-      #10;
+      #104166.667 DataTx = ~DataTx;
     end
-
-    //  Data frame of 01010101010 but with Recieve got disabled
-    repeat(11)
-    begin
-      #10 DataTx = ~DataTx;
-      #10;
-    end
+    //  Stop bit
+    #104166.667;
+    DataTx = 1'b1;
 end
 
 endmodule
