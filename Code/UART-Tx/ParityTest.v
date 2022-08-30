@@ -1,47 +1,57 @@
-//  This module is created by Mohamed Maged
-//  Undergraduate ECE student, Alexandria university.
-//  Testbench for the parity module
-`timescale 1ns/1ns
-module ParityTest();
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: ParityTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 30/8/2022
+//  KEYWORDS: Parity.
 
-//regs
-reg [7:0] RegIn;
-reg ResetN;
-reg [1:0] ParityType;
+`timescale 1ns/1ps
+module ParityTest;
 
-//wire
-wire ParityOut;
+//  Regs to drive the inputs
+reg reset_n;
+reg [7:0] reg_data;
+reg [1:0] parity_type;
 
-//Instatniation of the design module
+//  wire to show the output
+wire parity_bit;
+
+//  Instatniation of the design module
 Parity ForTest(
-    .RegIn(RegIn), .ResetN(ResetN), .ParityType(ParityType),
+    .reg_data(reg_data),
+    .reset_n(reset_n),
+    .parity_type(parity_type),
 
-    .ParityOut(ParityOut)
+    .parity_bit(parity_bit)
 );
 
-//Reset
-initial begin
-    ResetN = 1'b0;
-    #10 ResetN = 1'b1;
+//  Resetting the system
+initial
+begin
+    reset_n = 1'b0;
+    #10 reset_n = 1'b1;
 end
 
-//Test
-initial begin
-    RegIn = 8'b00010111;
-    #10 RegIn = 8'b00001111;
-    #10 RegIn = 8'b10101111;
-    #10 RegIn = 8'b10101001;
-    #10 RegIn = 8'b10101001;
-    #10 RegIn = 8'b10111101;
+//  Test
+initial
+begin
+        reg_data = 8'b00010111;
+    #10 reg_data = 8'b00001111;
+    #10 reg_data = 8'b10101111;
+    #10 reg_data = 8'b10101001;
+    #10 reg_data = 8'b10101001;
+    #10 reg_data = 8'b10111101;
 end
 
-//Cases
-initial begin
-        ParityType = 2'b00;
-    #10 ParityType = 2'b00;
-    #10 ParityType = 2'b01;
-    #10 ParityType = 2'b10;
-    #10 ParityType = 2'b11;
+//  Parity Types
+initial
+begin
+        parity_type = 2'b00;
+    #10 parity_type = 2'b00;
+    #10 parity_type = 2'b01;
+    #10 parity_type = 2'b10;
+    #10 parity_type = 2'b11;
 end
 
 endmodule

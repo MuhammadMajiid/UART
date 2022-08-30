@@ -1,113 +1,83 @@
-//  This module is created by Ali Morgan, credits to him
-//  Undergraduate ECE student, Alexandria university.
-//  This is the testbench for the top module for the UART-Tx Unit.
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: TxTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 30/8/2022
+//  KEYWORDS: Tx.
 
-`timescale 1ns/1ns
-module TxTest ();
+`timescale 1ns/1ps
+module TxTest;
 
-//Regs 
-reg ResetN, StopBits, DataLength, Send, Clock; 
-reg [1:0] ParityType, BaudRate;
-reg [7:0] DataIn; 
+//  Regs to drive the inputs
+reg reset_n;
+reg send;
+reg clock; 
+reg [1:0] parity_type;
+reg [1:0] baud_rate;
+reg [7:0] data_in; 
 
-//wires
-wire DataOut, ParallParOut, ActiveFlag, DoneFlag; 
+//  wires to show the output
+wire data_tx;
+wire active_flag;
+wire done_flag; 
 
-//Instance for the design module
-TxUnit TxUT(
-    .ResetN(ResetN), .StopBits(StopBits), .DataLength(DataLength), .Send(Send), 
-    .Clock(Clock), .ParityType(ParityType), .BaudRate(BaudRate), .DataIn(DataIn), //Inputs
+//  Instance for the design module
+TxUnit ForTest(
+    //  Inputs
+    .reset_n(reset_n),
+    .send(send), 
+    .clock(clock),
+    .parity_type(parity_type),
+    .baud_rate(baud_rate),
+    .data_in(data_in),
 
-
-    .DataOut(DataOut), .ParallParOut(ParallParOut), .ActiveFlag(ActiveFlag), .DoneFlag(DoneFlag) //outputs
+    //  Outputs
+    .data_tx(data_tx),
+    .active_flag(active_flag),
+    .done_flag(done_flag)
 );
 
-//50Mhz Clock
-initial begin
-    Clock = 1'b0;
-    forever #10 Clock = ~Clock; 
-end
-
-integer  i ;
-initial begin
-    //reseting the system for 10ns 
-    Send = 0 ; 
-    ResetN = 0 ; 
-    #10 ; 
-    ResetN = 1 ;
-    Send = 1 ; 
-
-    StopBits = 0 ; // 1 stop bit 
-    DataLength = 1 ; // 8 bits
-    ParityType = 2'b00 ; 
-    BaudRate = 2'b00 ;
-
-    DataIn = 8'b10101010 ;
-
-    for (i = 0;i < 4 ; i = i + 1) begin //testing four different speeds (BaudRate)
-        BaudRate = i ; 
-        ParityType = i ; 
-        if (i > 1) begin
-            StopBits = 1 ; 
-            DataLength = 0 ; 
-        end
-        else begin
-            StopBits    = 0;
-            DataLength  = 1;
-        end
-        Send = 1 ; //Send data 
-        #(4560000 / (i + 1)) ; 
-        Send = 0 ; //stop Sending
-        #1000;
-    end 
-end
-
-/*
-//Reset
-initial begin
-          ResetN = 1'b0; 
-    #10   ResetN = 1'b1; 
-    #50000  ResetN = 1'b1;
-    #40000  ResetN = 1'b1;
-end
-
-//Send signal
-initial begin
-          Send = 1'b0;
-    #10   Send = 1'b1;
-    #50000 Send = 1'b0;
-    #40000  Send = 1'b1;
-end
-
-//initialization 
+//  50Mhz clock
 initial
-fork
-    StopBits    = 1'b0; 
-    DataLength  = 1'b1;
-    ParityType  = 2'b00; 
-    BaudRate    = 2'b00;
-    DataIn      = 8'b0101_1010;
-join
-
-//Test
-integer  Dummy;
-initial begin
-
-//test for 4 speeds with 4 parity types
-    for (Dummy = 0; Dummy < 4 ; Dummy = Dummy + 1) begin 
-        BaudRate    = Dummy; 
-        ParityType  = Dummy; 
-        if (Dummy > 1) begin
-            StopBits    = 1'b1; 
-            DataLength  = 1'b0; 
-        end
-        else begin
-            StopBits    = 0;
-            DataLength  = 1;
-        end
-        #(4560000 / (Dummy + 1)) ; 
+begin
+    clock = 1'b0;
+    forever
+    begin
+      #10 clock = ~clock; 
     end 
 end
-*/
+
+//  Reseting the system
+initial
+begin
+    reset_n = 1'b0;
+    send    = 1'b0;
+    #100;
+    reset_n = 1'b1;
+    send    = 1'b1
+end
+
+//  Testing data
+initial
+begin
+    data_in = 8'b10101010 ;
+end
+
+//  Varying the Baud Rate and the Parity Type
+integer i;
+initial
+begin 
+    parity_type = 2'b00 ; 
+    baud_rate   = 2'b00 ;
+    for (i = 0;i < 4 ; i = i + 1)
+    begin
+        baud_rate = i ; 
+        parity_type = i ; 
+        #(4560000 / (i + 1)) ; 
+    end 
+    send    = 1'b0;
+    reset_n = 1'b0;
+end
 
 endmodule

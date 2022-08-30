@@ -1,41 +1,53 @@
-//  This module is created by Ali Morgan
-//  Undergraduate ECE student, Alexandria university.
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: BaudTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 30/8/2022
+//  KEYWORDS: Baud Rate, Clock Generator.
 
-`timescale 1ns/1ns
-module BaudTest();
+`timescale 1ns/1ps
+module BaudTest;
 
-//Regs
-reg ResetN, Clock;
-reg [1:0] BaudRate;
+//  Regs to drive the inputs
+reg reset_n;
+reg clock;
+reg [1:0] baud_rate;
 
-//wires
-wire BaudOut;
+//  wires to show the outputs
+wire baud_clk;
 
-//Instance of the design module
-BaudRateGen ForTest(ResetN, Clock, BaudRate, BaudOut);
+//  Instance of the design module
+baud_rateGen ForTest(
+    .reset_n(reset_n),
+    .clock(clock),
+    .baud_rate(baud_rate),
+    
+    .baud_clk(baud_clk)
+);
 
-//Clock
+//  System's Clock 50MHz
 initial begin
-                Clock = 1'b0;
-    forever #10 Clock = ~Clock;
+                clock = 1'b0;
+    forever #10 clock = ~clock;
 end
 
-//Reset and Enable
+//  Resetting the system
 initial begin
-        ResetN = 1'b0;
-    #10  ResetN = 1'b1;
+        reset_n = 1'b0;
+    #100  reset_n = 1'b1;
 end
 
-//Baud
-initial begin
-      BaudRate = 2'b11;        
-    #250000;
-     BaudRate = 2'b10;
-    #250000;
-     BaudRate = 2'b01;
-    #250000;
-     BaudRate = 2'b00;
-    #250000;
+//  Test
+integer i = 0;
+initial 
+begin
+    //  Testing for all the rates available
+    for (i = 0; i < 4; i = i +1) 
+    begin
+        baud_rate = i;
+        #(770000/(i+1));
+    end
 end
 
 endmodule

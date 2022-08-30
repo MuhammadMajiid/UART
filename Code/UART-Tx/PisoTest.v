@@ -1,99 +1,110 @@
-//                       ************************************** This module is created by Mohamed Maged **************************************
-//Chipions program's final project for phase(001) "verilog", UART-Tx.
-//Undergraduate student, ECE department, Alexandria university.
-`timescale 1ns/1ns
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: PisoTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 30/8/2022
+//  KEYWORDS: PISO.
+
+`timescale 1ns/1ps
 module PisoTest;
 
 //Test Inputs
-reg TStopBits, TDataLength, Tsend,Trst, TBaudOut, TParityOut;
-reg [1:0]   TParityType;
-reg [10:0]  TFrameOut;
+reg reset_n;
+reg send;
+reg baud_clk;
+reg parity_bit;
+reg [1:0] parity_type;
+reg [7:0] reg_data;
+
 
 //Test outputs
-wire TDataOut, TParllParity, TActive, TDone;
+wire data_tx;
+wire active_flag;
+wire done_flag;
 
 //Instantiation of the designed block
-PISO MyTest(
-    .ParityType(TParityType), .BaudOut(TBaudOut),
-    .StopBits(TStopBits), .DataLength(TDataLength), .ParityOut(TParityOut),
-    .Send(Tsend), .ResetN(Trst), .FrameOut(TFrameOut),
+PISO ForTest(
+    .parity_type(parity_type),
+    .parity_bit(parity_bit),
+    .send(send),
+    .reset_n(reset_n),
+    .reg_data(reg_data),
 
-    .DataOut(TDataOut), .ParallParOut(TParllParity),
-    .ActiveFlag(TActive), .DoneFlag(TDone)
+    .data_tx(data_tx),
+    .active_flag(active_flag),
+    .DoneFlag(DoneFlag)
 );
 
 
 //Monitorin the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  DataOut = %b   ParallelParity = %b  ActiveFlag = %b   DoneFlag = %b  
-                        The Inputs: StopBit = %b  DataLength = %b  Send = %b  Reset = %b   ParityType = %b ",
-     TDataOut, TParllParity, TActive, TDone, TStopBits, TDataLength, Tsend, Trst, TParityType[1:0] );
+    $monitor($time, "   The Outputs:  DataOut = %b  ActiveFlag = %b  DoneFlag = %b  
+                        The Inputs:   Send = %b  Reset = %b   ParityType = %b ",
+     data_tx, active_flag, done_flag, send, reset_n, parity_type[1:0] );
 end
 
 
-//Set up the reset
+//   Resetting the system
 initial begin
-    Trst = 1'b0;
-    #10 Trst = 1'b1;
-    #200 Trst = 1'b0;
-    #20  Trst = 1'b1;
+         reset_n = 1'b0;
+    #100 reset_n = 1'b1;
 end
 
-
-//Set up the send signal
-initial begin
-    Tsend = 1'b0;
-    #10 Tsend = 1'b1;
-    #150 Tsend = 1'b0;
-    #50  Tsend = 1'b1;
+//   Set up a clock "Baudrate"
+//   For example: Baud Rate of 9600
+initial
+begin
+    baud_clk = 1'b0;
+    forever
+    begin
+     #104166.667 baud_clk = ~baud_clk;
+    end
 end
 
-
-//Set up a clock "Baudrate"
+//   Set up the send signal
 initial begin
-    TBaudOut = 1'b1;
-    forever #10 TBaudOut = ~TBaudOut;
+          send = 1'b0;
+    #1000 send = 1'b1;
 end 
 
-
-//Varying the stopits, datalength, paritytype >>> 4-bits with 16 different cases with 8 ignored cases <<<
-initial begin
-
-         {TStopBits, TDataLength, TParityType[1:0]} = 4'b0100;      //1-bit stop bit, 8-bits data length, no parity
-         TParityOut  =   (^(01001010))? 1'b0 : 1'b1;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b0101;      //1-bit stop bit, 8-bits data length, odd parity
-         TParityOut  =   (^(01001010))? 1'b0 : 1'b1;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b0110;      //1-bit stop bit, 8-bits data length, even parity
-         TParityOut  =   (^(01001010))? 1'b1 : 1'b0;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b0111;      //1-bit stop bit, 8-bits data length, no parity
-         TParityOut  =   (^(01011010))? 1'b0 : 1'b1;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b1000;      //2-bits stop bit, 7-bits data length, no parity
-         TParityOut  =   (^(1000010))? 1'b0 : 1'b1;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b1001;      //2-bits stop bit, 7-bits data length, odd parity
-         TParityOut  =   (^(1001010))? 1'b0 : 1'b1;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b1010;      //2-bits stop bit, 7-bits data length, even parity
-         TParityOut  =   (^(1001010))? 1'b1 : 1'b0;
-    #220 {TStopBits, TDataLength, TParityType[1:0]} = 4'b1011;      //2-bits stop bit, 7-bits data length, no parity
-         TParityOut  =   (^(1001000))? 1'b0 : 1'b1;
+//   Varying the stopits, datalength, paritytype >>> 4-bits with 16 different cases with 8 ignored cases <<<
+initial
+begin
+     //  no parity
+     parity_type = 2'b00;
+     parity_bit  =   (^(01001010))? 1'b0 : 1'b1;
+     //   odd parity
+     #2291653;
+     parity_type = 2'b01;
+     parity_bit  =   (^(01001010))? 1'b0 : 1'b1;
+     //  even parity
+     #2291653;
+     parity_type = 2'b10;
+     parity_bit  =   (^(01001010))? 1'b1 : 1'b0;
+     //  no parity
+     #2291653;
+     parity_type = 2'b11;
+     parity_bit  =   (^(01011010))? 1'b0 : 1'b1;
+     #2291653;
 end
 
 
-//various Frames 
+//   Various Data In 
 initial begin
 
-         TFrameOut = 11'b11010010100;         //1-bit stop bit, 8-bits data bits, no parity bit
-    #220 TFrameOut = 11'b10010010100;         //1-bit stop bit, 8-bits data bits, odd parity
-    #220 TFrameOut = 11'b11010010100;         //1-bit stop bit, 8-bits data bits, even parity
-    #220 TFrameOut = 11'b11010110100;         //1-bit stop bit, 8-bits data bits, no parity bit
-    #220 TFrameOut = 11'b11110000100;         //2-bit stop bit, 7-bits data bits, no parity bit
-    #220 TFrameOut = 11'b11010010100;         //2-bit stop bit, 7-bits data bits, odd parity
-    #220 TFrameOut = 11'b11010010100;         //2-bit stop bit, 7-bits data bits, even parity
-    #220 TFrameOut = 11'b11110010000;         //2-bit stop bit, 7-bits data bits, no parity bit
-    
+    reg_data = 8'b01001010;
+    #2291653;
+    reg_data = 8'b01001010;
+    #2291653;
+    reg_data = 8'b01001010;
+    #2291653;
+    reg_data = 8'b01011010;
+    #2291653;
 end
 
 initial begin
-    #1780 $stop;
+    #12000000 $stop;
 end
 
 endmodule
