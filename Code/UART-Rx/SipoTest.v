@@ -1,27 +1,31 @@
-//  This module is created by Mohamed Maged
-//  Undergraduate ECE student, Alexandria university.
-//  A TestBench module code for a Serial-In-Parallel-Out shift register,
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: SipoTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 31/8/2022
+//  KEYWORDS: SIPO, Shift register, Reciever.
 
 `timescale 1ns/1ps
 module SipoTest;
 
 //  Regs to drive inputs
-reg ResetN;
-reg DataTx;
-reg BaudOut;
+reg reset_n;
+reg data_tx;
+reg baud_clk;
 
 //  Wires to show outputs
-wire RecievedFlag;
-wire [10:0] DataParl;
+wire recieved_flag;
+wire [10:0] data_parll;
 
 //  Design instance
 SIPO ForTest(
-    .ResetN(ResetN),
-    .DataTx(DataTx),
-    .BaudOut(BaudOut),
+    .reset_n(reset_n),
+    .data_tx(data_tx),
+    .baud_clk(baud_clk),
 
-    .RecievedFlag(RecievedFlag),
-    .DataParl(DataParl)
+    .recieved_flag(recieved_flag),
+    .data_parll(data_parll)
 );
 
 //  System clock is Baud clock
@@ -29,17 +33,17 @@ SIPO ForTest(
 //  16*9600 for oversampling protocol
 initial 
 begin
-    BaudOut = 1'b0;
+    baud_clk = 1'b0;
     forever begin
-        #3255.208 BaudOut = ~BaudOut;
+        #3255.208 baud_clk = ~baud_clk;
     end
 end
 
 //  Resetting the system
 initial 
 begin
-    ResetN = 1'b0;
-    #100 ResetN = 1'b1;
+    reset_n = 1'b0;
+    #100 reset_n = 1'b1;
 end
 
 //  Test 
@@ -47,15 +51,15 @@ initial
 begin
     //  Data frame of 11010101010
     //  Sent at baud rate 9600
-    DataTx = 1'b1;
+    data_tx = 1'b1;
     //  Idle at first
     repeat(10)
     begin
-      #104166.667 DataTx = ~DataTx;
+      #104166.667 data_tx = ~data_tx;
     end
     //  Stop bit
     #104166.667;
-    DataTx = 1'b1;
+    data_tx = 1'b1;
 end
 
 endmodule

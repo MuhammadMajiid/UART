@@ -1,58 +1,67 @@
-//  This module is created by Mohamed Maged
-//  Undergraduate ECE student, Alexandria university.
-//  A TestBench for the error check unit
-`timescale 1ns/1ns
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: CheckTest.v
+//  TYPE: Test fixture "Test bench".
+//  DATE: 31/8/2022
+//  KEYWORDS: Parity, Error.
+
+`timescale 1ns/1ps
 module ChechTest;
 
 //  Regs to drive the inputs
-reg ResetN;
-reg ParityBit;
-reg StartBit;
-reg StopBit;
-reg [1:0] ParityType;
-reg [7:0] RawData;
+reg reset_n;
+reg parity_bit;
+reg start_bit;
+reg stop_bit;
+reg [1:0] parity_type;
+reg [7:0] raw_data;
 
-//  Wires to show the output
-wire [2:0] ErrorFlag;
+//  Wire to show the output
+wire [2:0] error_flag;
 
 //  design module instance
 ErrorCheck ForTest(
-    .ResetN(ResetN),
-    .ParityBit(ParityBit),
-    .StartBit(StartBit),
-    .StopBit(StopBit),
-    .ParityType(ParityType),
-    .RawData(RawData),
+    .reset_n(reset_n),
+    .parity_bit(parity_bit),
+    .start_bit(start_bit),
+    .stop_bit(stop_bit),
+    .parity_type(parity_type),
+    .raw_data(raw_data),
 
-    .ErrorFlag(ErrorFlag)
+    .error_flag(error_flag)
 );
 
 //  resetting the system
-initial begin
-    ResetN = 1'b0;
-    #10 ResetN = 1'b1;
+initial 
+begin
+    reset_n = 1'b0;
+    #10 reset_n = 1'b1;
 end
 
 //  initialization 
-initial begin
-    StartBit   = 1'b0;
-    StopBit    = 1'b1;
-    ParityBit  = 1'b1;
-    ParityType = 2'b00;
-    RawData    = 8'b1;
+initial 
+begin
+    start_bit   = 1'b0;
+    stop_bit    = 1'b1;
+    parity_bit  = 1'b1;
+    parity_type = 2'b00;
+    raw_data    = 8'b1;
     #10;
 end
 
 //  Test
 integer i = 0;
-initial begin
-    for (i = 0; i < 4; i = i + 1 ) begin
-        ParityType = i;
-        RawData    = $random % (256);    //  random number ranges from [-256:255]
-        StartBit   = $random % (1);     //  random number ranges from [0:1]
-        StopBit    = $random % (1);     //  random number ranges from [0:1]
-        ParityBit  = $random % (1);     //  random number ranges from [0:1]
-        case (ErrorFlag)
+initial 
+begin
+    for (i = 0; i < 4; i = i + 1 ) 
+    begin
+        parity_type = i;
+        raw_data    = $random % (256);   //  random number ranges from [-256:255]
+        start_bit   = $random % (1);     //  random number ranges from [0:1]
+        stop_bit    = $random % (1);     //  random number ranges from [0:1]
+        parity_bit  = $random % (1);     //  random number ranges from [0:1]
+        case (error_flag)
             3'b000 : $display("At %d   Holy moly! There is no error!", $time);
             3'b001 : $display("At time %d There is a parity bit error!", $time);
             3'b010 : $display("At time %d There is a start bit error!", $time);

@@ -1,80 +1,87 @@
-//  This module is created by Mohamed Maged.
-//  Undergraduate ECE student, Alexandria university.
-//  This is the Top module for the Reciever unit.
-//  Architecture designed by Mohamed Maged.
-//  Full Architecture will be provided in the ReadMe file.
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: RxUnit.v
+//  TYPE: module.
+//  DATE: 31/8/2022
+//  KEYWORDS: Reciever, UART-Rx.
+//  PURPOSE: An RTL modelling for the Top module for the Reciever unit.
+//  Architecture designed by Mohamed Maged,
+//  according to the UART protocol.
+//  Full Architecture will be provided in the README file.
 
 module RxUnit(
-    input ResetN,            //  Active low reset.
-    input DataTx,            //  Serial Data recieved from the transmitter.
-    input Clock,             //  The System's main clock.
-    input [1:0] ParityType,  //  Parity type agreed upon by the Tx and Rx units.
-    input [1:0] BaudRate,    //  Baud Rate agreed upon by the Tx and Rx units.
+    input reset_n,            //  Active low reset.
+    input data_tx,            //  Serial data recieved from the transmitter.
+    input clock,              //  The System's main clock.
+    input [1:0] parity_type,  //  Parity type agreed upon by the Tx and Rx units.
+    input [1:0] baud_rate,    //  Baud Rate agreed upon by the Tx and Rx units.
 
-    output [2:0] ErrorFlag,
+    output [2:0] error_flag,
     //  Consits of three bits, each bit is a flag for an error
-    //  ErrorFlag[0] ParityError flag, ErrorFlag[1] StartError flag,
-    //  ErrorFlag[2] StopError flag.
-    output [7:0] Data        //  The 8-bits data separated from the data frame.
+    //  error_flag[0] ParityError flag, error_flag[1] StartError flag,
+    //  error_flag[2] StopError flag.
+    output [7:0] data_out
+    //  The 8-bits data separated from the frame.
 );
 
 //  Intermediate wires
-wire BaudSig;      //  The clocking signal from the baud generator.
-wire [10:0] DataP; //  Data parallel comes from the SIPO unit.
-wire RFlag;        //  The Recieved-Enabling flag from SIPO unit to DeFrame unit.
-wire DeParBit;     //  The Parity bit from the Deframe unit to the ErrorCheck unit.
-wire DeStrtBit;    //  The Start bit from the Deframe unit to the ErrorCheck unit.
-wire DeStpBit;     //  The Stop bit from the Deframe unit to the ErrorCheck unit.
+wire baud_clk_w;          //  The clocking signal from the baud generator.
+wire [10:0] data_parll_w; //  data_out parallel comes from the SIPO unit.
+wire recieved_flag_w;     //  The Recieved-Enabling flag from SIPO unit to DeFrame unit.
+wire def_par_bit_w;       //  The Parity bit from the Deframe unit to the ErrorCheck unit.
+wire def_strt_bit_w;      //  The Start bit from the Deframe unit to the ErrorCheck unit.
+wire def_stp_bit_w;       //  The Stop bit from the Deframe unit to the ErrorCheck unit.
 
-//  Clocking Unit Instance
+//  clocking Unit Instance
 BaudGen Unit1(
     //  Inputs
-    .ResetN(ResetN),
-    .Clock(Clock),
-    .BaudRate(BaudRate),
+    .reset_n(reset_n),
+    .clock(clock),
+    .baud_rate(baud_rate),
 
     //  Output
-    .BaudOut(BaudSig)
+    .baud_clk(baud_clk_w)
 );
 
 //  Shift Register Unit Instance
 SIPO Unit2(
     //  Inputs
-    .ResetN(ResetN),
-    .DataTx(DataTx),
-    .BaudOut(BaudSig),
+    .reset_n(reset_n),
+    .data_tx(data_tx),
+    .baud_clk(baud_clk_w),
 
     //  Outputs
-    .RecievedFlag(RFlag),
-    .DataParl(DataP)
+    .recieved_flag(recieved_flag_w),
+    .data_parll(data_parll_w)
 );
 
 //  DeFramer Unit Instance
 DeFrame Unit3(
     //  Inputs
-    .ResetN(ResetN),
-    .RecievedFlag(RFlag),
-    .DataParl(DataP),
+    .reset_n(reset_n),
+    .recieved_flag(recieved_flag_w),
+    .data_parll(data_parll_w),
     
     //  Outputs
-    .ParityBit(DeParBit),
-    .StartBit(DeStrtBit),
-    .StopBit(DeStpBit),
-    .RawData(Data)
+    .parity_bit(def_par_bit_w),
+    .start_bit(def_strt_bit_w),
+    .stop_bit(def_stp_bit_w),
+    .raw_data(data_out)
 );
 
 //  Error Checking Unit Instance
 ErrorCheck Unit4(
     //  Inputs
-    .ResetN(ResetN),
-    .ParityBit(DeParBit),
-    .StartBit(DeStrtBit),
-    .StopBit(DeStpBit),
-    .ParityType(ParityType),
-    .RawData(Data),
+    .reset_n(reset_n),
+    .parity_bit(def_par_bit_w),
+    .start_bit(def_strt_bit_w),
+    .stop_bit(def_stp_bit_w),
+    .parity_type(parity_type),
+    .raw_data(data_out),
 
     //  Output
-    .ErrorFlag(ErrorFlag)
+    .error_flag(error_flag)
 );
 
 endmodule

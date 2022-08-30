@@ -1,46 +1,51 @@
-//  This module is created by Mohamed Maged
-//  Undergraduate ECE student, Alexandria university.
-//  This is an RTL design module code resbosible for separating the frame
-//  into Data bits and Parity bit and truncates Start and Stop bits.
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: DeFrame.v
+//  TYPE: module.
+//  DATE: 31/8/2022
+//  KEYWORDS: Frame, Data.
+//  PURPOSE: An RTL modelling for separating the frame
+//  into Data bits, Parity bit, Start and Stop bits.
 
 module DeFrame(
-    input ResetN,             //  Active low reset.
-    input RecievedFlag,       //  Output from the sipo unit as an enable.
-    input [10:0] DataParl,    //  Data frame passed from the sipo unit.
+    input reset_n,             //  Active low reset.
+    input recieved_flag,       //  Output from the sipo unit as an enable.
+    input [10:0] data_parll,   //  Data frame passed from the sipo unit.
 
-    output reg ParityBit,     //  The parity bit separated from the data frame.
-    output reg StartBit,      //  The Start bit separated from the data frame.
-    output reg StopBit,       //  The Stop bit separated from the data frame.
-    output reg [7:0] RawData  //  The 8-bits data separated from the data frame.
+    output reg parity_bit,     //  The parity bit separated from the data frame.
+    output reg start_bit,      //  The Start bit separated from the data frame.
+    output reg stop_bit,       //  The Stop bit separated from the data frame.
+    output reg [7:0] raw_data  //  The 8-bits data separated from the data frame.
 );
 
 //  -Deframing- Output Data & parity bit logic
-always @(negedge ResetN, DataParl)
+always @(negedge reset_n, data_parll)
 begin
-    if(~ResetN)
+    if(~reset_n)
     begin
-      RawData   <= {8{1'b1}};
-      ParityBit <= 1'b1;
-      StartBit  <= 1'b0;
-      StopBit   <= 1'b1;
+      raw_data   <= {8{1'b1}};
+      parity_bit <= 1'b1;
+      start_bit  <= 1'b0;
+      stop_bit   <= 1'b1;
     end
     else 
     begin
-      if(RecievedFlag)
+      if(recieved_flag)
       begin
-        RawData   <= DataParl[9:2];
-        ParityBit <= DataParl[1];
-        StartBit  <= DataParl[10];
-        StopBit   <= DataParl[0];
-      //  Truncates the Start and Stop bits
+        raw_data   <= data_parll[9:2];
+        parity_bit <= data_parll[1];
+        start_bit  <= data_parll[10];
+        stop_bit   <= data_parll[0];
       end
       else
       begin
-        RawData   <= RawData;
-        ParityBit <= ParityBit;
-        StartBit  <= StartBit;
-        StopBit   <= StopBit;
+        raw_data   <= raw_data;
+        parity_bit <= parity_bit;
+        start_bit  <= start_bit;
+        stop_bit   <= stop_bit;
       end
     end
 end
+
 endmodule

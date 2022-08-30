@@ -1,120 +1,130 @@
-//  This module is created by Mohamed Maged
-//  Undergraduate ECE student, Alexandria university.
-//  An RTL design module code for a Serial-In-Parallel-Out shift register,
+//  AUTHOR: Mohamed Maged Elkholy.
+//  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
+//  AUTHOR'S EMAIL: majiidd17@icloud.com
+//  FILE NAME: SIPO.v
+//  TYPE: module.
+//  DATE: 31/8/2022
+//  KEYWORDS: SIPO, Shift register, Reciever.
+//  PURPOSE: An RTL modelling for a Serial-In-Parallel-Out shift register,
 //  controlled by an FSM to satisfy the UART-Rx protocol.
-//  Stores the data recieved at the positive-clock-edge [BaudRate], then
-//  pass the data frame to the DeFrame unit.
+//  Stores the data recieved at the positive-clock-edges [BaudRate], then
+//  pass the data frame to the DeFrame unit. 
 
 module SIPO(
-    input ResetN,   //  Active low reset.
-    input DataTx,   //  Serial Data recieved from the transmitter.
-    input BaudOut,  //  The clocking input comes from the sampling unit.
+    input reset_n,   //  Active low reset.
+    input data_tx,   //  Serial Data recieved from the transmitter.
+    input baud_clk,  //  The clocking input comes from the sampling unit.
 
-    output reg RecievedFlag,     //  outputs a signal enables the deframe unit. 
-    output reg [10:0] DataParl   //  outputs the 11-bit parallel frame.
+    output reg recieved_flag,      //  outputs a signal enables the deframe unit. 
+    output reg [10:0] data_parll   //  outputs the 11-bit parallel frame.
 );
 //  Internal
-reg [10:0] Shifter;
-reg [3:0]  FrameCounter;
-reg [3:0]  StopCount;
-reg [1:0]  NextState;
+reg [3:0]  frame_counter;
+reg [3:0]  stop_count;
+reg [1:0]  next_state;
 
 //  Encoding the states of the reciever
 //  Every State captures the corresponding bit from the frame
-localparam IDLE      = 2'b00,
-           Center    = 2'b01,
-           FrameTime = 2'b10;
+localparam IDLE   = 2'b00,
+           CENTER = 2'b01,
+           FRAME  = 2'b10;
 
 //  Shifting data logic part
-always @(posedge BaudOut, negedge ResetN) 
+always @(posedge baud_clk, negedge reset_n) 
 begin
-    if(~ResetN)
+    if(~reset_n)
     begin
-      Shifter      <= {11{1'b1}};
-      StopCount    <= 4'd0;
-      FrameCounter <= 4'd0;
-      NextState    <= IDLE;
+      data_parll    <= {11{1'b1}};
+      stop_count    <= 4'd0;
+      frame_counter <= 4'd0;
+      next_state    <= IDLE;
     end
     else 
     begin
-      case (NextState)
+      case (next_state)
 
         //  Idle case waits untill start bit
         IDLE : 
         begin
-          Shifter      <= {11{1'b1}};
-          StopCount    <= 4'd0;
-          FrameCounter <= 4'd0;
+          data_parll    <= {11{1'b1}};
+          stop_count    <= 4'd0;
+          frame_counter <= 4'd0;
           //  waits till sensing the start bit which is low
-          if(~DataTx)
+          if(~data_tx)
           begin
-            NextState <= Center;
+            next_state <= CENTER;
           end
           else
           begin
-            NextState <= IDLE;
+            next_state <= IDLE;
           end
         end
 
-        //  shifts the sampling to the center of the recieved bit
+        //  shifts the sampling to the Center of the recieved bit
         //  due to the protocol, thus the bit is stable.
-        Center : 
+        CENTER : 
         begin
-          if(StopCount == 4'd7)
+          if(&stop_count[2:0])
+          //  This is an equivalent condition to (stop_count == 7)
+          //  in order to avoid comparators/xors
           begin
-            Shifter   <= {Shifter,DataTx};
-            StopCount <= 4'd0;
-            NextState <= FrameTime;
+            data_parll  <= {data_parll,data_tx};
+            stop_count  <= 4'd0;
+            next_state  <= FRAME;
           end
           else
           begin
-            StopCount <= StopCount + 1;
-            NextState <= Center;
+            stop_count <= stop_count + 1;
+            next_state <= CENTER;
           end
         end
 
         //  shifts the remaining 10-bits of the frame,
         //  then returns to the idle case.
-        FrameTime :
+        FRAME :
         begin
-          if(FrameCounter == 4'd10)
+          if(frame_counter[1] && frame_counter[3])
+          //  This is an equivalent condition to (frame_counter == 4'd10)
+          //  in order to avoid comparators/xors
           begin
-            FrameCounter <= 4'd0;
-            NextState    <= IDLE;
+            frame_counter <= 4'd0;
+            next_state    <= IDLE;
           end
           else
           begin
-            if(StopCount == 4'd15)
+            if(&stop_count[3:0])
+            //  This is an equivalent condition to (stop_count == 4'd15)
+            //  in order to avoid comparators/xors
             begin
-              Shifter   <= {Shifter,DataTx};
-              FrameCounter <= FrameCounter + 1;
-              StopCount <= 4'd0; 
-              NextState <= FrameTime;
+              data_parll    <= {data_parll,data_tx};
+              frame_counter <= frame_counter + 1;
+              stop_count    <= 4'd0; 
+              next_state    <= FRAME;
             end
             else 
             begin
-              StopCount <= StopCount + 1;
-              NextState <= FrameTime;
+              stop_count <= stop_count + 1;
+              next_state <= FRAME;
             end
           end
         end
 
+        //  Automatically directs to the IDLE state
         default : 
         begin
-          NextState <= IDLE;
+          next_state <= IDLE;
         end
       endcase
     end
 end
 
-//  Output logic
+//  Flag logic
 always @(*) 
 begin
-  //  Output Data
-  DataParl <= Shifter;
-
-  //  RecievedFlag assignment
-  RecievedFlag <= (FrameCounter == 4'd10);
+  //  recieved_flag assignment
+  recieved_flag <= (frame_counter[1] && frame_counter[3]);
+  //  This is an equivalent condition to (frame_counter == 4'd10)
+  //  in order to avoid comparators/xors
 end
 
 endmodule
