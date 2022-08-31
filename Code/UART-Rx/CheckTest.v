@@ -7,7 +7,7 @@
 //  KEYWORDS: Parity, Error.
 
 `timescale 1ns/1ps
-module ChechTest;
+module CheckTest;
 
 //  Regs to drive the inputs
 reg reset_n;
@@ -32,14 +32,32 @@ ErrorCheck ForTest(
     .error_flag(error_flag)
 );
 
-//  resetting the system
+//  dump
+initial
+begin
+    $dumpfile("CheckTest.vcd");
+    $dumpvars;
+end
+
+//Monitorin the outputs and the inputs
+initial begin
+    $monitor($time, "   The Outputs:  Error Flag = %b 
+                        The Inputs:   Pariyt Type = %b Reset = %b
+                        Parity Bit = %b  Start Bit = %b  Stop Bit = %b 
+                        Data In = %b",
+    error_flag[2:0], parity_type[1:0], reset_n, 
+    parity_bit, start_bit, stop_bit, raw_data[7:0]);
+end
+
+
+//  Resetting the system
 initial 
 begin
     reset_n = 1'b0;
     #10 reset_n = 1'b1;
 end
 
-//  initialization 
+//  Initialization 
 initial 
 begin
     start_bit   = 1'b0;
@@ -74,6 +92,11 @@ begin
         endcase
         #50;
     end
+end
+
+//  Stop
+initial begin
+    #300 $stop;
 end
 
 endmodule

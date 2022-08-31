@@ -19,6 +19,7 @@ module SIPO(
     output reg [10:0] data_parll   //  outputs the 11-bit parallel frame.
 );
 //  Internal
+reg [10:0] shifter;
 reg [3:0]  frame_counter;
 reg [3:0]  stop_count;
 reg [1:0]  next_state;
@@ -34,7 +35,7 @@ always @(posedge baud_clk, negedge reset_n)
 begin
     if(~reset_n)
     begin
-      data_parll    <= {11{1'b1}};
+      shifter       <= {11{1'b1}};
       stop_count    <= 4'd0;
       frame_counter <= 4'd0;
       next_state    <= IDLE;
@@ -46,7 +47,7 @@ begin
         //  Idle case waits untill start bit
         IDLE : 
         begin
-          data_parll    <= {11{1'b1}};
+          shifter       <= {11{1'b1}};
           stop_count    <= 4'd0;
           frame_counter <= 4'd0;
           //  waits till sensing the start bit which is low
@@ -68,7 +69,7 @@ begin
           //  This is an equivalent condition to (stop_count == 7)
           //  in order to avoid comparators/xors
           begin
-            data_parll  <= {data_parll,data_tx};
+            shifter     <= {shifter,data_tx};
             stop_count  <= 4'd0;
             next_state  <= FRAME;
           end
@@ -96,7 +97,7 @@ begin
             //  This is an equivalent condition to (stop_count == 4'd15)
             //  in order to avoid comparators/xors
             begin
-              data_parll    <= {data_parll,data_tx};
+              shifter       <= {shifter,data_tx};
               frame_counter <= frame_counter + 1;
               stop_count    <= 4'd0; 
               next_state    <= FRAME;
@@ -118,9 +119,11 @@ begin
     end
 end
 
-//  Flag logic
+//  Output logic
 always @(*) 
 begin
+  //  Output data
+  data_parll    <= shifter;
   //  recieved_flag assignment
   recieved_flag <= (frame_counter[1] && frame_counter[3]);
   //  This is an equivalent condition to (frame_counter == 4'd10)

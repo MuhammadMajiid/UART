@@ -4,7 +4,7 @@
 //  FILE NAME: BaudTest.v
 //  TYPE: Test fixture "Test bench".
 //  DATE: 31/8/2022
-//  KEYWORDS: Baud Rate, Clock Generator.
+//  KEYWORDS: Baud Rate, clock Generator.
 
 `timescale 1ns/1ps
 module BaudTest;
@@ -26,11 +26,19 @@ Sampling ForTest(
     .baud_clk(baud_clk)
 );
 
-//  System's Clock 50MHz
+//  dump
 initial
 begin
-    Clock = 1'b0;
-    forever #10 Clock = ~Clock;
+    $dumpfile("BaudTest.vcd");
+    $dumpvars;
+end
+
+
+//  System's clock 50MHz
+initial
+begin
+    clock = 1'b0;
+    forever #10 clock = ~clock;
 end
 
 //  Resetting the system

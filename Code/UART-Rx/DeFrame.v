@@ -19,12 +19,24 @@ module DeFrame(
     output reg [7:0] raw_data  //  The 8-bits data separated from the data frame.
 );
 
+//  Reverses the order of the 'data_parll' bus vector
+//  to reclaim the original data.
+reg [10:0] holder;
+integer i = 0;
+always @(data_parll) begin
+  for (i = 0; i < 11 ; i = i + 1)
+  begin
+    holder[i] = data_parll[10-i];
+  end
+end
+
 //  -Deframing- Output Data & parity bit logic
-always @(negedge reset_n, data_parll)
+always @(negedge reset_n, holder)
 begin
     if(~reset_n)
     begin
-      raw_data   <= {8{1'b1}};
+      //  Idle
+      raw_data     <= {8{1'b1}};
       parity_bit <= 1'b1;
       start_bit  <= 1'b0;
       stop_bit   <= 1'b1;
@@ -33,16 +45,17 @@ begin
     begin
       if(recieved_flag)
       begin
-        raw_data   <= data_parll[9:2];
-        parity_bit <= data_parll[1];
-        start_bit  <= data_parll[10];
-        stop_bit   <= data_parll[0];
+        start_bit  <= holder[0];
+        raw_data   <= holder[8:1];
+        parity_bit <= holder[9];
+        stop_bit   <= holder[10];
       end
       else
       begin
+        //  Hold
+        start_bit  <= start_bit;
         raw_data   <= raw_data;
         parity_bit <= parity_bit;
-        start_bit  <= start_bit;
         stop_bit   <= stop_bit;
       end
     end

@@ -28,6 +28,20 @@ SIPO ForTest(
     .data_parll(data_parll)
 );
 
+//  dump
+initial
+begin
+    $dumpfile("SipoTest.vcd");
+    $dumpvars;
+end
+
+//Monitorin the outputs and the inputs
+initial begin
+    $monitor($time, "   The Outputs:  Recieved Flag = %b  Data = %b
+                        The Inputs:   Reset = %b  Data In = %b",
+    recieved_flag, data_parll[10:0], reset_n, data_tx);
+end
+
 //  System clock is Baud clock
 //  Testing the most common BaudRate 9600 bps
 //  16*9600 for oversampling protocol
@@ -60,6 +74,13 @@ begin
     //  Stop bit
     #104166.667;
     data_tx = 1'b1;
+    #104166.667;
+end
+
+//  Stop
+initial begin
+    #1250000 $stop;
+    // Simulation for 1.5 ms
 end
 
 endmodule

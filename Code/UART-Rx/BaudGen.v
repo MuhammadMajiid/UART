@@ -27,7 +27,7 @@ localparam BAUD24      = 2'b00,
            BAUD192     = 2'b11;
 
 //  BaudRate 4-1 Mux
-always @(baud_rate) 
+always @(*) 
 begin
     case (baud_rate)
       //  All these ratio ticks are calculated for 50MHz Clock,
@@ -36,7 +36,7 @@ begin
       BAUD48: final_value  = 10'd326;     //  16 * 4800 BaudRate.
       BAUD96: final_value  = 10'd163;     //  16 * 9600 BaudRate.
       BAUD192: final_value = 10'd81;      //  16 * 19200 BaudRate.
-      default: final_value = 10'd0;       //  The system's original Clock.
+      default: final_value = 10'd163;     //  16 * 9600 BaudRate.
     endcase
 end
 

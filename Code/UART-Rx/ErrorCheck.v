@@ -26,53 +26,46 @@ module ErrorCheck(
 reg error_parity;
 
 //  Encoding for the 4 types of the parity
-localparam ODD       = 2'b01,
-           EVEN      = 2'b10,
-           NOPARITY  = 2'b00, 2'b11;
+localparam ODD        = 2'b01,
+           EVEN       = 2'b10,
+           NOPARITY00 = 2'b00,
+           NOPARITY11 = 2'b11;
 
 //  Parity Check logic
 always @(negedge reset_n, raw_data, parity_bit, parity_type)
 begin
-    if(~reset_n)
-    begin
-        error_flag   <= {3{1'b0}};
-        error_parity <= 1'b1;
+  if(~reset_n)
+  begin
+    error_flag   <= {3{1'b0}};
+    error_parity <= 1'b1;
+  end
+  else
+  begin
+  begin
+    case (parity_type)
+        NOPARITY00, NOPARITY11:
+        begin
+        error_parity <= 1'b1;      
+        end
+
+        ODD: 
+        begin
+          error_parity <= (^raw_data)? 1'b0 : 1'b1;
+        end
+
+        EVEN: 
+        begin
+          error_parity <= (^raw_data)? 1'b1 : 1'b0;
+        end
+
+        default: 
+        begin
+          error_parity <= 1'b1;      
+          //  No Parity
+        end
+    endcase
     end
-    else
-    begin
-      if ((parity_type == NoParity1) || (parity_type == Noparity2))
-      begin
-        error_parity <= 1'b1;
-        //  No parity, reset to 0 to not meet the condition of the error flag
-        //  because in these cases and the reset case 
-        //  the parity bit will be recieved as "1"
-      end
-      else
-      begin
-        case (parity_type)
-           NOPARITY:
-           begin
-            error_parity <= 1'b0;      
-            //  No Parity
-           end
-           ODD: 
-           begin
-             error_parity <= (^raw_data)? 1'b0 : 1'b1;
-           end
-
-           EVEN: 
-           begin
-             error_parity <= (^raw_data)? 1'b1 : 1'b0;
-           end
-
-            default: 
-            begin
-              error_parity <= 1'b0;      
-              //  No Parity
-            end
-        endcase
-      end
-    end 
+  end 
 end
 
 //  Output logic

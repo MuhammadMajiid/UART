@@ -32,6 +32,24 @@ DeFrame ForTest(
     .raw_data(raw_data)
 );
 
+//  dump
+initial
+begin
+    $dumpfile("DeFrameTest.vcd");
+    $dumpvars;
+end
+
+//Monitorin the outputs and the inputs
+initial begin
+    $monitor($time, "   The Outputs:  Data Out = %b  Start bit = %b  
+                        Stop bit = %b  Parity bit = %b 
+                        The Inputs:   Recieved Flag = %b  
+                        Reset = %b   Data In = %b ",
+    raw_data[7:0], start_bit, stop_bit, parity_bit,
+    recieved_flag, reset_n, data_parll[10:0]);
+end
+
+
 //  Resetting the system
 initial begin
     reset_n = 1'b0;
@@ -53,11 +71,17 @@ end
 
 //  Test
 initial begin
-    //  Checking Ten different frames
-    repeat(10)
+    //  Checking Five different frames
+    repeat(5)
     begin
       #10 data_parll = $random % (2048);
     end
+end
+
+//  Stop
+initial begin
+    #100 $stop;
+    //  Simulation for 100 ns
 end
 
 endmodule

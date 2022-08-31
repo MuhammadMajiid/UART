@@ -18,7 +18,7 @@ reg [1:0] baud_rate;
 
 //  Wires to show the outputs
 wire [2:0] error_flag;
-wire [7:0] Data;
+wire [7:0] data_out;
 
 //  Instance of the design module
 RxUnit ForTest(
@@ -29,8 +29,24 @@ RxUnit ForTest(
     .baud_rate(baud_rate),
 
     .error_flag(error_flag),
-    .Data(Data)
+    .data_out(data_out)
 );
+
+//  dump
+initial
+begin
+    $dumpfile("RxTest.vcd");
+    $dumpvars;
+end
+
+//Monitorin the outputs and the inputs
+initial begin
+    $monitor($time, "   The Outputs:  Data Out = %b  Error Flag = %b  
+                        The Inputs:   Reset = %b   Data In = %b 
+                        Parity Type = %b  Baud Rate = %b ",
+    data_out[7:0], error_flag[2:0], reset_n, 
+    data_tx, parity_type[1:0], baud_rate[1:0]);
+end
 
 //  Resetting the system
 initial 
@@ -49,24 +65,63 @@ begin
     end
 end
 
-//  Test for 9600 baud_rate
+//  Test
 initial 
 begin
+    //  Test for 9600 baud_rate
     baud_rate = 2'b10;
-    //  Testing with odd parity
+    //  Testing with ODD parity
     parity_type = 2'b01;
-    //  Data for test, frame of 110101010
-    //  with odd parity, 1 stop bit
+    //  Data for test, frame of 11001010110
+    //  with ODD parity, 1 stop bit
     //  Sent at baud rate of 9600
     data_tx = 1'b1;
     //  Idle at first
-    repeat(10)
-    begin
-      #104166.667 data_tx = ~data_tx;
-    end
+    #104166.667 data_tx = 1'b0;
+    #104166.667 data_tx = 1'b1;
+    #104166.667 data_tx = 1'b1;
+    #104166.667 data_tx = 1'b0;
+    #104166.667 data_tx = 1'b1;
+    #104166.667 data_tx = 1'b0;
+    #104166.667 data_tx = 1'b1;
+    #104166.667 data_tx = 1'b0;
+    #104166.667 data_tx = 1'b0;
+    #104166.667 data_tx = 1'b1;
     //  Stop bit
     #104166.667;
     data_tx = 1'b1;
+
+//////////////////////////////////////////////////////////////
+
+    //  Test for 19200 baud_rate
+    baud_rate = 2'b11;
+    //  Testing with EVEN parity
+    parity_type = 2'b10;
+    //  Data for test, frame of 11001010110
+    //  with EVEN parity, 1 stop bit
+    //  Sent at baud rate of 19200
+    data_tx = 1'b1;
+    //  Idle at first
+    #52083.333 data_tx = 1'b0;
+    #52083.333 data_tx = 1'b1;
+    #52083.333 data_tx = 1'b1;
+    #52083.333 data_tx = 1'b0;
+    #52083.333 data_tx = 1'b1;
+    #52083.333 data_tx = 1'b0;
+    #52083.333 data_tx = 1'b1;
+    #52083.333 data_tx = 1'b0;
+    #52083.333 data_tx = 1'b0;
+    #52083.333 data_tx = 1'b1;
+    //  Stop bit
+    #52083.333;
+    data_tx = 1'b1;
+
+end
+
+//  Stop
+initial begin
+    #2000000 $stop;
+    // Simulation for 2 ms
 end
 
 endmodule
