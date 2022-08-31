@@ -10,6 +10,7 @@
 
 module ErrorCheck(
     input reset_n,             //  Active low reset.
+    input recieved_flag,       //  enable from the sipo unit for the flags.
     input parity_bit,          //  The parity bit from the frame for comparison.
     input start_bit,           //  The Start bit from the frame for comparison.
     input stop_bit,            //  The Stop bit from the frame for comparison.
@@ -31,8 +32,8 @@ localparam ODD        = 2'b01,
            NOPARITY00 = 2'b00,
            NOPARITY11 = 2'b11;
 
-//  Parity Check logic
-always @(negedge reset_n, raw_data, parity_bit, parity_type)
+//  Asynchronous Reset logic
+always @(negedge reset_n)
 begin
   if(~reset_n)
   begin
@@ -41,39 +42,57 @@ begin
   end
   else
   begin
-  begin
-    case (parity_type)
-        NOPARITY00, NOPARITY11:
-        begin
-        error_parity <= 1'b1;      
-        end
-
-        ODD: 
-        begin
-          error_parity <= (^raw_data)? 1'b0 : 1'b1;
-        end
-
-        EVEN: 
-        begin
-          error_parity <= (^raw_data)? 1'b1 : 1'b0;
-        end
-
-        default: 
-        begin
-          error_parity <= 1'b1;      
-          //  No Parity
-        end
-    endcase
-    end
+    error_flag   <= error_flag;
+    error_parity <= error_parity;
   end 
 end
 
-//  Output logic
-always @(*) 
+//  Parity Check logic
+always @(raw_data, parity_bit, parity_type) 
 begin
-  error_flag[0] <= (error_parity != parity_bit);
-  error_flag[1] <= (start_bit != 1'b0);
-  error_flag[2] <= (stop_bit != 1'b1);
+  case (parity_type)
+      NOPARITY00, NOPARITY11:
+      begin
+      error_parity <= 1'b1;      
+      end
+
+      ODD: 
+      begin
+        error_parity <= (^raw_data)? 1'b0 : 1'b1;
+      end
+
+      EVEN: 
+      begin
+        error_parity <= (^raw_data)? 1'b1 : 1'b0;
+      end
+
+      default: 
+      begin
+        error_parity <= 1'b1;      
+        //  No Parity
+      end
+  endcase
+end
+
+//  Output logic
+always @(parity_bit, error_parity, parity_bit, start_bit, stop_bit) 
+begin
+  if(recieved_flag)
+  begin
+    error_flag[0] <= ~(error_parity && parity_bit);
+    //  Equivalent to (error_parity != parity_bit)
+    //  in order to avoid comparators/xors
+    error_flag[1] <= ~(start_bit && 1'b0);
+    //  Equivalent to (start_bit != 1'b0)
+    //  in order to avoid comparators/xors
+    error_flag[2] <= ~(stop_bit && 1'b1);
+    //  Equivalent to (stop_bit != 1'b1)
+    //  in order to avoid comparators/xors
+  end
+  else
+  begin
+    error_flag <= 3'b000;
+  end
 end
 
 endmodule

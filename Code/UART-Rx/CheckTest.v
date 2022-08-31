@@ -11,6 +11,7 @@ module CheckTest;
 
 //  Regs to drive the inputs
 reg reset_n;
+reg recieved_flag;
 reg parity_bit;
 reg start_bit;
 reg stop_bit;
@@ -23,6 +24,7 @@ wire [2:0] error_flag;
 //  design module instance
 ErrorCheck ForTest(
     .reset_n(reset_n),
+    .recieved_flag(recieved_flag),
     .parity_bit(parity_bit),
     .start_bit(start_bit),
     .stop_bit(stop_bit),
@@ -42,10 +44,10 @@ end
 //Monitorin the outputs and the inputs
 initial begin
     $monitor($time, "   The Outputs:  Error Flag = %b 
-                        The Inputs:   Pariyt Type = %b Reset = %b
+                        The Inputs:   Pariyt Type = %b Reset = %b  Recevied Flag = %b
                         Parity Bit = %b  Start Bit = %b  Stop Bit = %b 
                         Data In = %b",
-    error_flag[2:0], parity_type[1:0], reset_n, 
+    error_flag[2:0], parity_type[1:0], reset_n, recieved_flag,
     parity_bit, start_bit, stop_bit, raw_data[7:0]);
 end
 
@@ -55,6 +57,13 @@ initial
 begin
     reset_n = 1'b0;
     #10 reset_n = 1'b1;
+end
+
+//  Enable
+initial 
+begin
+    recieved_flag = 1'b0;
+    #10 recieved_flag = 1'b1;
 end
 
 //  Initialization 

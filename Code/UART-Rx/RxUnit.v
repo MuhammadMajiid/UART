@@ -17,6 +17,10 @@ module RxUnit(
     input [1:0] parity_type,  //  Parity type agreed upon by the Tx and Rx units.
     input [1:0] baud_rate,    //  Baud Rate agreed upon by the Tx and Rx units.
 
+    output active_flag,
+    //  outputs logic 1 when data is in progress.
+    output done_flag,
+    //  Outputs logic 1 when data is recieved
     output [2:0] error_flag,
     //  Consits of three bits, each bit is a flag for an error
     //  error_flag[0] ParityError flag, error_flag[1] StartError flag,
@@ -28,7 +32,7 @@ module RxUnit(
 //  Intermediate wires
 wire baud_clk_w;          //  The clocking signal from the baud generator.
 wire [10:0] data_parll_w; //  data_out parallel comes from the SIPO unit.
-wire recieved_flag_w;     //  The Recieved-Enabling flag from SIPO unit to DeFrame unit.
+wire recieved_flag_w;     //  works as an enable for deframe unit.
 wire def_par_bit_w;       //  The Parity bit from the Deframe unit to the ErrorCheck unit.
 wire def_strt_bit_w;      //  The Start bit from the Deframe unit to the ErrorCheck unit.
 wire def_stp_bit_w;       //  The Stop bit from the Deframe unit to the ErrorCheck unit.
@@ -52,6 +56,7 @@ SIPO Unit2(
     .baud_clk(baud_clk_w),
 
     //  Outputs
+    .active_flag(active_flag),
     .recieved_flag(recieved_flag_w),
     .data_parll(data_parll_w)
 );
@@ -67,6 +72,7 @@ DeFrame Unit3(
     .parity_bit(def_par_bit_w),
     .start_bit(def_strt_bit_w),
     .stop_bit(def_stp_bit_w),
+    .done_flag(done_flag),
     .raw_data(data_out)
 );
 
@@ -74,6 +80,7 @@ DeFrame Unit3(
 ErrorCheck Unit4(
     //  Inputs
     .reset_n(reset_n),
+    .recieved_flag(done_flag),
     .parity_bit(def_par_bit_w),
     .start_bit(def_strt_bit_w),
     .stop_bit(def_stp_bit_w),

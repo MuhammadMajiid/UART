@@ -15,6 +15,7 @@ reg data_tx;
 reg baud_clk;
 
 //  Wires to show outputs
+wire active_flag;
 wire recieved_flag;
 wire [10:0] data_parll;
 
@@ -24,6 +25,7 @@ SIPO ForTest(
     .data_tx(data_tx),
     .baud_clk(baud_clk),
 
+    .active_flag(active_flag),
     .recieved_flag(recieved_flag),
     .data_parll(data_parll)
 );
@@ -37,9 +39,9 @@ end
 
 //Monitorin the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Recieved Flag = %b  Data = %b
+    $monitor($time, "   The Outputs:  Active Flag = %b  Recieved Flag = %b  Data = %b
                         The Inputs:   Reset = %b  Data In = %b",
-    recieved_flag, data_parll[10:0], reset_n, data_tx);
+    active_flag, recieved_flag, data_parll[10:0], reset_n, data_tx);
 end
 
 //  System clock is Baud clock

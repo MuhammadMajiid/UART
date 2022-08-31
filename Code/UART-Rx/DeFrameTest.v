@@ -18,6 +18,7 @@ reg [10:0] data_parll;
 wire parity_bit;
 wire start_bit;
 wire stop_bit;
+wire done_flag;
 wire [7:0] raw_data;
 
 //  Design module instance
@@ -29,6 +30,7 @@ DeFrame ForTest(
     .parity_bit(parity_bit),
     .start_bit(start_bit),
     .stop_bit(stop_bit),
+    .done_flag(done_flag),
     .raw_data(raw_data)
 );
 
@@ -42,11 +44,10 @@ end
 //Monitorin the outputs and the inputs
 initial begin
     $monitor($time, "   The Outputs:  Data Out = %b  Start bit = %b  
-                        Stop bit = %b  Parity bit = %b 
-                        The Inputs:   Recieved Flag = %b  
-                        Reset = %b   Data In = %b ",
-    raw_data[7:0], start_bit, stop_bit, parity_bit,
-    recieved_flag, reset_n, data_parll[10:0]);
+                        Stop bit = %b  Parity bit = %b Done Flag = %b  
+                        The Inputs: Reset = %b  Data In = %b Recieved Flag = %b ",
+    raw_data[7:0], start_bit, stop_bit, parity_bit, done_flag, 
+    reset_n, data_parll[10:0], recieved_flag);
 end
 
 
