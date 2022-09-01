@@ -24,12 +24,12 @@ module DeFrame(
 //  Reverses the order of the 'data_parll' bus vector
 //  to reclaim the original data.
 reg [10:0] holder;
-integer i = 0;
+integer i = 4'd0;
 always @(data_parll)
 begin
-  for (i = 0; i < 11 ; i = i + 1)
+  for (i = 4'd0; i < 4'd11 ; i = i + 1'd1)
   begin
-    holder[i] = data_parll[10-i];
+    holder[i] = data_parll[4'd10-i];
   end
 end
 
