@@ -34,24 +34,12 @@ localparam IDLE   = 2'b00,
 //  Asynchronous Reset logic
 always @(negedge reset_n) 
 begin
-    if(~reset_n)
-    begin
-      data_parll    <= {11{1'b1}};
-      stop_count    <= 4'd0;
-      frame_counter <= 4'd0;
-      active_flag   <= 1'b0;
-      recieved_flag <= 1'b0;
-      next_state    <= IDLE;
-    end
-    else 
-    begin
-      data_parll    <= data_parll;
-      stop_count    <= stop_count;
-      frame_counter <= frame_counter;
-      active_flag   <= active_flag;
-      recieved_flag <= recieved_flag;
-      next_state    <= next_state;
-    end
+  data_parll    <= {11{1'b1}};
+  stop_count    <= 4'd0;
+  frame_counter <= 4'd0;
+  active_flag   <= 1'b0;
+  recieved_flag <= 1'b0;
+  next_state    <= IDLE;
 end
 
 //  FSM logic
@@ -138,6 +126,7 @@ always @(posedge baud_clk) begin
             data_parll    <= data_parll;
             frame_counter <= 4'd0;
             stop_count    <= 4'd0; 
+            recieved_flag <= 1'b0;
             next_state    <= IDLE;
           end
           else 

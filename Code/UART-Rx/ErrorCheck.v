@@ -35,16 +35,8 @@ localparam ODD        = 2'b01,
 //  Asynchronous Reset logic
 always @(negedge reset_n)
 begin
-  if(~reset_n)
-  begin
-    error_flag   <= {3{1'b0}};
-    error_parity <= 1'b1;
-  end
-  else
-  begin
-    error_flag   <= error_flag;
-    error_parity <= error_parity;
-  end 
+  error_flag   <= {3{1'b0}};
+  error_parity <= 1'b1; 
 end
 
 //  Parity Check logic
@@ -74,8 +66,8 @@ begin
   endcase
 end
 
-//  Output logic
-always @(parity_bit, error_parity, parity_bit, start_bit, stop_bit) 
+//  Combinational output logic
+always @(*) 
 begin
   if(recieved_flag)
   begin
@@ -91,7 +83,7 @@ begin
   end
   else
   begin
-    error_flag <= 3'b000;
+    error_flag   <= {3{1'b0}};
   end
 end
 

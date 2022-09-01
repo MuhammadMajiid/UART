@@ -36,24 +36,12 @@ end
 //  Asynchronous Reset logic
 always @(negedge reset_n)
 begin
-  if(~reset_n)
-  begin
-    //  Idle
-    raw_data     <= {8{1'b1}};
-    parity_bit <= 1'b1;
-    start_bit  <= 1'b0;
-    stop_bit   <= 1'b1;
-    done_flag  <= 1'b1;
-  end
-  else
-  begin
-    //  Hold
-    start_bit  <= start_bit;
-    raw_data   <= raw_data;
-    parity_bit <= parity_bit;
-    stop_bit   <= stop_bit;
-    done_flag  <= done_flag;
-  end
+  //  Idle
+  raw_data     <= {8{1'b1}};
+  parity_bit <= 1'b1;
+  start_bit  <= 1'b0;
+  stop_bit   <= 1'b1;
+  done_flag  <= 1'b1;
 end
 
 //  -Deframing- Output Data & parity bit logic

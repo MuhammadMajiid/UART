@@ -37,7 +37,7 @@ begin
     $dumpvars;
 end
 
-//Monitorin the outputs and the inputs
+//  Monitoring the outputs and the inputs
 initial begin
     $monitor($time, "   The Outputs:  Active Flag = %b  Recieved Flag = %b  Data = %b
                         The Inputs:   Reset = %b  Data In = %b",

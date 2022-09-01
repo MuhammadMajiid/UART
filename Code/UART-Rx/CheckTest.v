@@ -41,7 +41,7 @@ begin
     $dumpvars;
 end
 
-//Monitorin the outputs and the inputs
+//  Monitoring the outputs and the inputs
 initial begin
     $monitor($time, "   The Outputs:  Error Flag = %b 
                         The Inputs:   Pariyt Type = %b Reset = %b  Recevied Flag = %b
