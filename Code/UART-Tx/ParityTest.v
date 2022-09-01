@@ -26,6 +26,20 @@ Parity ForTest(
     .parity_bit(parity_bit)
 );
 
+//  dump
+initial
+begin
+    $dumpfile("ParityTest.vcd");
+    $dumpvars;
+end
+
+//  Monitoring the outputs and the inputs
+initial begin
+    $monitor($time, "   The Outputs:  Parity Bit = %b
+                        The Inputs:   Parity Type = %b  Reset = %b  Data In = %b",
+    parity_bit, parity_type[1:0], reset_n, reg_data);
+end
+
 //  Resetting the system
 initial
 begin

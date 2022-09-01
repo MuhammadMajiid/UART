@@ -23,24 +23,12 @@ module TxUnit(
 //  Interconnections
 wire parity_bit_w;
 wire baud_clk_w;
-wire [7:0] reg_data_w;
-
-//Register Unit
-InReg Unit1(
-    //  Inputs
-    .reset_n(reset_n),
-    .data_in(data_in),
-    .done_flag(done_flag),
-
-    //  Output
-    .reg_data(reg_data_w)
-);
 
 //Parity unit instantiation 
 Parity Unit2(
     //  Inputs
     .reset_n(reset_n),
-    .reg_data(reg_data_w),
+    .data_in(data_in),
     .parity_type(parity_type),
     
     //  Output
@@ -64,7 +52,7 @@ PISO Unit4(
     .reset_n(reset_n),
     .send(send),
     .baud_clk(baud_clk_w),
-    .reg_data(reg_data_w),
+    .data_in(data_in),
     .parity_type(parity_type),
     .parity_bit(parity_bit_w),
 

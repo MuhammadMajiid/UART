@@ -26,6 +26,13 @@ BaudGen ForTest(
     .baud_clk(baud_clk)
 );
 
+//  dump
+initial
+begin
+    $dumpfile("BaudTest.vcd");
+    $dumpvars;
+end
+
 //  System's Clock 50MHz
 initial begin
                 clock = 1'b0;
@@ -46,8 +53,15 @@ begin
     for (i = 0; i < 4; i = i +1) 
     begin
         baud_rate = i;
-        #(770000/(i+1));
+        //  enough time for about 4 cycles for each baud rate
+        #(1680000/(i+1));
     end
+end
+
+//  Stop
+initial begin
+    #3500000 $stop;
+    // Simulation for 4 ms
 end
 
 endmodule
