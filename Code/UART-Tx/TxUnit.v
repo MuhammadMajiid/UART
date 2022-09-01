@@ -24,6 +24,17 @@ module TxUnit(
 wire parity_bit_w;
 wire baud_clk_w;
 
+//  Baud generator unit instantiation
+BaudGen Unit1(
+    //  Inputs
+    .reset_n(reset_n),
+    .clock(clock),
+    .baud_rate(baud_rate),
+    
+    //  Output
+    .baud_clk(baud_clk_w)
+);
+
 //Parity unit instantiation 
 Parity Unit2(
     //  Inputs
@@ -35,19 +46,8 @@ Parity Unit2(
     .parity_bit(parity_bit_w)
 );
 
-//  Baud generator unit instantiation
-BaudGen Unit3(
-    //  Inputs
-    .reset_n(reset_n),
-    .clock(clock),
-    .baud_rate(baud_rate),
-    
-    //  Output
-    .baud_clk(baud_clk_w)
-);
-
 //  PISO shift register unit instantiation
-PISO Unit4(
+PISO Unit3(
     //  Inputs
     .reset_n(reset_n),
     .send(send),
