@@ -22,6 +22,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
     - [DeFrame Unit](#deframe-unit)
     - [Error Check Unit](#error-check-unit)
     - [Rx Top Module](#rx-top-module)
+- [FPGA Implementaion](#fpga-implementation)
 - [About The Author](#about-the-author)
 
 
@@ -29,7 +30,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
 ### UART-Tx
 
 *   ***UART-Tx full architecture:***
-![Tx architecture](C:\Users\majii\Pictures\Schemes\UART-Tx.png)
+![Tx architecture](Images\UART-Tx.png)
 
 #### Baud Rate Generator Unit
 
@@ -95,11 +96,11 @@ The top module ***Tx*** connects all the architecture together.
 ### UART-Rx
 
 *   ***UART-Rx full architecture:***
-
+![Rx architecture](Images\UART-Rx.png)
 
 #### Oversampling Unit
 
-The most commonly usedsampling rate is 16 times the baud rate, which means that each serial bit is sampled 16 times.
+It is a ***Baud Rate Generator***, but uses sampling rate of 16 times the baud rate, which means that each serial bit is sampled 16 times, this methodology shifts the time to read the data to the center of the bit.
 
 *   Design module *[BaudGen.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/BaudGen.v)*
 *   Test bench *[BaudTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/BaudTest.v)*
@@ -143,6 +144,11 @@ The top module ***Rx*** connects all the architecture together.
 *   Test bench *[RxTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/RxTest.v)*
 
 
+#### FPGA Implementaion
+
+***PS: in progress to implement the design onto Spartan6/ZYNQ board***
+
+
 #### About The Author
 
 **Author**: *Mohamed Maged Elkholy*
@@ -155,4 +161,4 @@ The top module ***Rx*** connects all the architecture together.
 
 **About the project**: *Implemented a full UART using Verilog HDL from scratch, considering all the RTL guidlines and clean code best practices. Wrote a test bench for each module and for the top modules, used ModelSim to run the simulation.*
 
-***PS: in progress to implement the design onto Spartan6/ZYNQ board***
+
