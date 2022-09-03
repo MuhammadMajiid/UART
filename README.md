@@ -30,7 +30,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
 ### UART-Tx
 
 *   ***UART-Tx full architecture:***
-![Tx architecture](Images\UART-Tx.png)
+![Tx architecture](UART_Tx.png)
 
 #### Baud Rate Generator Unit
 
@@ -96,7 +96,7 @@ The top module ***Tx*** connects all the architecture together.
 ### UART-Rx
 
 *   ***UART-Rx full architecture:***
-![Rx architecture](Images\UART-Rx.png)
+![Rx architecture](UART_Rx.png)
 
 #### Oversampling Unit
 
