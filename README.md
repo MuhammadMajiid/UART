@@ -26,6 +26,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
     - [Rx Top Module](#rx-top-module)
 - [FPGA Implementaion](#fpga-implementation)
 - [About The Author](#about-the-author)
+- [About The Project](#about-the-project)
 
 
 
@@ -163,12 +164,16 @@ The top module ***Rx*** connects all the architecture together.
 
 **Author**: *Mohamed Maged Elkholy*
 
+**Personal Email**: *majiidd17@icloud.com*
+
 **Education**: *Electronics and communication department, Senior-1 student.*
 
 **College**: *Faculty of engineering, Alexandria university, Egypt.*
 
-**Brief info.**: *Interested in Digital IC Design and verfication, seeking any chance to enhance my knowledge and empower my skills.*
+**Brief info.**: *Interested in Digital IC Design and Verfication, seeking any chance to enhance my knowledge and empower my skills.*
 
-**About the project**: *Implemented a full UART using Verilog HDL from scratch, considering all the RTL guidlines and clean code best practices. Wrote a test bench for each module and for the top modules, used ModelSim to run the simulation.*
+#### About the project
+
+*Implemented a full UART using Verilog HDL from scratch, considering all the RTL guidlines and clean code best practices. Wrote a test bench for each module and for the top modules, used ModelSim to run the simulation.*
 
 
