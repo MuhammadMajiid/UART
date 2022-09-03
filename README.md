@@ -20,7 +20,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
 - [UART-Rx](#uart-rx)
     - [Oversampling Unit](#oversampling-unit)
     - [SIPO Unit](#sipo-unit)
-        - [Tx FSM](#tx-fsm)
+        - [Rx FSM](#rx-fsm)
     - [DeFrame Unit](#deframe-unit)
     - [Error Check Unit](#error-check-unit)
     - [Rx Top Module](#rx-top-module)
@@ -119,7 +119,7 @@ It is a ***Baud Rate Generator***, but uses sampling rate of 16 times the baud r
 ***Serial-Input-Parallel-Output*** shift register, this unit is responsible of converting the data from serial data to parallel bus, it is controlled by an ***FSM logic*** to do so, It takes about 11 baud_clk cycles to recieve the whole data packet.
 Basically it is the heart of the reciever unit.
 
-##### Tx FSM
+##### Rx FSM
 
 ![Sipo FSM](Images/UART_Rx.png)
 
