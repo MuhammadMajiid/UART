@@ -15,10 +15,12 @@ In UART communication, two UARTs communicate directly with each other. The trans
     - [Baud Rate Generator Unit](#baud-rate-generator-unit)
     - [Parity Bit Unit](#parity-bit-unit)
     - [PISO Unit](#piso-unit)
+        - [Tx FSM](#tx-fsm)
     - [Tx Top Module](#tx-top-module)
 - [UART-Rx](#uart-rx)
     - [Oversampling Unit](#oversampling-unit)
     - [SIPO Unit](#sipo-unit)
+        - [Tx FSM](#tx-fsm)
     - [DeFrame Unit](#deframe-unit)
     - [Error Check Unit](#error-check-unit)
     - [Rx Top Module](#rx-top-module)
@@ -30,7 +32,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
 ### UART-Tx
 
 *   ***UART-Tx full architecture:***
-![Tx architecture](UART_Tx.png)
+![Tx architecture](Images/UART_Tx.png)
 
 #### Baud Rate Generator Unit
 
@@ -75,6 +77,10 @@ This unit supports three parity types:
 ***Parallel-Input-Serial-Output*** shift register, this unit is responsible of converting the data from a parallel bus to serial data in a single wire, it is controlled by an ***FSM logic*** to do so, It takes about 11 baud_clk cycles to send the whole data packet.
 Basically it is the heart of the transmission unit.
 
+##### Tx FSM
+
+![Piso FSM](Images/Tx_FSM.png)
+
 **Notes:**
 
 *   The **Done Flag** indicates whether the transmission is done or not, in order to enable another packet to get ready to be sent.
@@ -96,7 +102,7 @@ The top module ***Tx*** connects all the architecture together.
 ### UART-Rx
 
 *   ***UART-Rx full architecture:***
-![Rx architecture](UART_Rx.png)
+![Rx architecture](Images/UART_Tx.png)
 
 #### Oversampling Unit
 
@@ -111,6 +117,10 @@ It is a ***Baud Rate Generator***, but uses sampling rate of 16 times the baud r
 
 ***Serial-Input-Parallel-Output*** shift register, this unit is responsible of converting the data from serial data to parallel bus, it is controlled by an ***FSM logic*** to do so, It takes about 11 baud_clk cycles to recieve the whole data packet.
 Basically it is the heart of the reciever unit.
+
+##### Tx FSM
+
+![Sipo FSM](Images/UART_Rx.png)
 
 *   Design module *[SIPO.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/SIPO.v)*
 *   Test bench *[SipoTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/SipoTest.v)*
