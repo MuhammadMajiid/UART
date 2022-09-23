@@ -64,7 +64,7 @@ begin
     endcase
 end
 
-always @(posedge recieved_flag, negedge reset_n) begin
+always @(*) begin
   if (~reset_n) 
   begin
     parity_flag  <= 1'b0;
@@ -79,7 +79,7 @@ always @(posedge recieved_flag, negedge reset_n) begin
       parity_flag <= ~(error_parity && parity_bit);
       //  Equivalent to (error_parity != parity_bit)
       //  in order to avoid comparators/xors
-      start_flag  <= ~(start_bit && 1'b0);
+      start_flag  <= (start_bit || 1'b0);
       //  Equivalent to (start_bit != 1'b0)
       //  in order to avoid comparators/xors
       stop_flag   <= ~(stop_bit && 1'b1);
