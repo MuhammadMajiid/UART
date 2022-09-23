@@ -25,6 +25,25 @@ wire       rx_done_flag_tb;
 wire [2:0] error_flag_tb;
 wire [7:0] data_out_tb;
 
+//  DUT
+Duplex DUT(
+    //  Inputs
+    .reset_n(reset_n_tb),
+    .send(send_tb),
+    .clock(clock_tb),
+    .parity_type(parity_type_tb),
+    .baud_rate(baud_rate_tb),
+    .data_in(data_in_tb)
+
+    //  Outputs
+    .tx_active_flag(tx_active_flag_tb),
+    .tx_done_flag(tx_done_flag_tb),
+    .rx_active_flag(rx_active_flag_tb),
+    .rx_done_flag(rx_done_flag_tb),
+    .error_flag(error_flag_tb),
+    .data_out(data_out_tb)
+);
+
 //  Save wave form
 initial
 begin
@@ -80,24 +99,5 @@ initial begin
     #2600000 $stop;
     // Simulation for 3 ms
 end
-
-//  DUT
-Duplex DUT(
-    //  Inputs
-    .reset_n(reset_n_tb),
-    .send(send_tb),
-    .clock(clock_tb),
-    .parity_type(parity_type_tb),
-    .baud_rate(baud_rate_tb),
-    .data_in(data_in_tb)
-
-    //  Outputs
-    .tx_active_flag(tx_active_flag_tb),
-    .tx_done_flag(tx_done_flag_tb),
-    .rx_active_flag(rx_active_flag_tb),
-    .rx_done_flag(rx_done_flag_tb),
-    .error_flag(error_flag_tb),
-    .data_out(data_out_tb)
-);
 
 endmodule
