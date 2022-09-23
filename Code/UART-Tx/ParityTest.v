@@ -10,12 +10,12 @@
 module ParityTest;
 
 //  Regs to drive the inputs
-reg reset_n;
+reg       reset_n;
 reg [7:0] reg_data;
 reg [1:0] parity_type;
 
 //  wire to show the output
-wire parity_bit;
+wire      parity_bit;
 
 //  Instatniation of the design module
 Parity ForTest(
@@ -35,8 +35,7 @@ end
 
 //  Monitoring the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Parity Bit = %b
-                        The Inputs:   Parity Type = %b  Reset = %b  Data In = %b",
+    $monitor($time, "   The Outputs:  Parity Bit = %b  The Inputs:   Parity Type = %b  Reset = %b  Data In = %b",
     parity_bit, parity_type[1:0], reset_n, reg_data);
 end
 

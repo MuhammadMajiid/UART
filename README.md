@@ -157,7 +157,32 @@ The top module ***Rx*** connects all the architecture.
 
 #### FPGA Implementaion
 
-***PS: in progress to implement the design onto Spartan6/ZYNQ board***
+**Synthesis**
+
+*   Synthesized the design on the ***Xilinx ISE Design Suite V.14.7***, used ***Xilinx PlanAhead*** to map the I/O ports of the FPGA and the board switches and leds.
+
+**Implementation**
+
+Implemented the UART-Tx design into ***Spartan6*** board, monitored the the design output using the terminal by a simple python script, using the serial library.
+
+*   *PS: Implmentation is done after editing the design to suite the Spartan6 board specifications.*
+
+```python
+import serial
+ 
+ser = serial.Serial(
+    port='COM3',
+    baudrate=9600,
+    parity=serial.PARITY_ODD,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout = None
+)
+ 
+while 1:
+    hexData= ser.read().hex()
+    print(hexData)
+```
 
 
 #### About The Author

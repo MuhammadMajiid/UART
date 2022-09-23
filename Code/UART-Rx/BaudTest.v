@@ -10,15 +10,15 @@
 module BaudTest;
 
 //  Regs to drive inputs
-reg reset_n;
-reg clock;
+reg       reset_n;
+reg       clock;
 reg [1:0] baud_rate;
 
 //  wires to show outputs
-wire baud_clk;
+wire      baud_clk;
 
 //  Instance of the design module
-Sampling ForTest(
+BaudGen ForTest(
     .reset_n(reset_n),
     .clock(clock),
     .baud_rate(baud_rate),

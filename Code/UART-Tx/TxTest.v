@@ -10,17 +10,17 @@
 module TxTest;
 
 //  Regs to drive the inputs
-reg reset_n;
-reg send;
-reg clock; 
+reg       reset_n;
+reg       send;
+reg       clock; 
 reg [1:0] parity_type;
 reg [1:0] baud_rate;
 reg [7:0] data_in; 
 
 //  wires to show the output
-wire data_tx;
-wire active_flag;
-wire done_flag; 
+wire      data_tx;
+wire      active_flag;
+wire      done_flag; 
 
 //  Instance for the design module
 TxUnit ForTest(
@@ -47,10 +47,7 @@ end
 
 //  Monitoring the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Data Tx = %b  
-                        Done Flag = %b  Active Flag = %b 
-                        The Inputs:   Reset = %b  Data In = %b  Send = %b 
-                        Parity Type = %b  Baud Rate = %b",
+    $monitor($time, "   The Outputs:  Data Tx = %b  Done Flag = %b  Active Flag = %b The Inputs:   Reset = %b  Data In = %b  Send = %b Parity Type = %b  Baud Rate = %b",
     data_tx, done_flag, active_flag, reset_n, 
     data_in[7:0], send, parity_type[1:0], baud_rate[1:0]);
 end

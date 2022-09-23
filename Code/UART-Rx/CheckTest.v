@@ -10,11 +10,11 @@
 module CheckTest;
 
 //  Regs to drive the inputs
-reg reset_n;
-reg recieved_flag;
-reg parity_bit;
-reg start_bit;
-reg stop_bit;
+reg       reset_n;
+reg       recieved_flag;
+reg       parity_bit;
+reg       start_bit;
+reg       stop_bit;
 reg [1:0] parity_type;
 reg [7:0] raw_data;
 
@@ -43,10 +43,7 @@ end
 
 //  Monitoring the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Error Flag = %b 
-                        The Inputs:   Pariyt Type = %b Reset = %b  Recevied Flag = %b
-                        Parity Bit = %b  Start Bit = %b  Stop Bit = %b 
-                        Data In = %b",
+    $monitor($time, "   The Outputs:  Error Flag = %b The Inputs:   Pariyt Type = %b Reset = %b  Recevied Flag = %b Parity Bit = %b  Start Bit = %b  Stop Bit = %b  Data In = %b",
     error_flag[2:0], parity_type[1:0], reset_n, recieved_flag,
     parity_bit, start_bit, stop_bit, raw_data[7:0]);
 end

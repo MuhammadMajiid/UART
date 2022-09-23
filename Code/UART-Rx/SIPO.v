@@ -11,13 +11,13 @@
 //  pass the data frame to the DeFrame unit. 
 
 module SIPO(
-    input reset_n,   //  Active low reset.
-    input data_tx,   //  Serial Data recieved from the transmitter.
-    input baud_clk,  //  The clocking input comes from the sampling unit.
+    input  wire         reset_n,        //  Active low reset.
+    input  wire         data_tx,        //  Serial Data recieved from the transmitter.
+    input  wire         baud_clk,       //  The clocking input comes from the sampling unit.
 
-    output reg active_flag,        //  outputs logic 1 when data is in progress.
-    output reg recieved_flag,      //  outputs a signal enables the deframe unit. 
-    output reg [10:0] data_parll   //  outputs the 11-bit parallel frame.
+    output reg          active_flag,    //  outputs logic 1 when data is in progress.
+    output reg          recieved_flag,  //  outputs a signal enables the deframe unit. 
+    output reg  [10:0]  data_parll      //  outputs the 11-bit parallel frame.
 );
 //  Internal
 reg [3:0]  frame_counter;
@@ -31,20 +31,16 @@ localparam IDLE   = 2'b00,
            FRAME  = 2'b10,
            HOLD   = 2'b11;
 
-//  Asynchronous Reset logic
-always @(negedge reset_n) 
+//  FSM with Asynchronous Reset logic
+always @(posedge baud_clk, negedge reset_n) 
 begin
-  data_parll    <= {11{1'b1}};
-  stop_count    <= 4'd0;
-  frame_counter <= 4'd0;
-  active_flag   <= 1'b0;
-  recieved_flag <= 1'b0;
-  next_state    <= IDLE;
-end
-
-//  FSM logic
-always @(posedge baud_clk) begin
-  case (next_state)
+  if (~reset_n) 
+  begin
+    next_state        <= IDLE;
+  end
+  else
+  begin
+    case (next_state)
       //  Idle case waits untill start bit
       IDLE : 
       begin
@@ -52,6 +48,7 @@ always @(posedge baud_clk) begin
         stop_count    <= 4'd0;
         frame_counter <= 4'd0;
         recieved_flag <= 1'b0;
+        active_flag   <= 1'b0;
         //  waits till sensing the start bit which is low
         if(~data_tx)
         begin
@@ -73,14 +70,15 @@ always @(posedge baud_clk) begin
         //  This is an equivalent condition to (stop_count == 7)
         //  in order to avoid comparators/xors
         begin
-          data_parll  <= {data_parll,data_tx};
-          stop_count  <= 4'd0;
-          next_state  <= FRAME;
+          //  Captures the start bit
+          data_parll[0]  <= data_tx;
+          stop_count     <= 4'd0;
+          next_state     <= FRAME;
         end
         else
         begin
-          stop_count <= stop_count + 1;
-          next_state <= CENTER;
+          stop_count  <= stop_count + 4'b1;
+          next_state  <= CENTER;
         end
       end
 
@@ -95,6 +93,7 @@ always @(posedge baud_clk) begin
           frame_counter <= 4'd0;
           recieved_flag <= 1'b1;
           next_state    <= HOLD;
+          recieved_flag <= 1'b1;
         end
         else
         begin
@@ -102,14 +101,14 @@ always @(posedge baud_clk) begin
           //  This is an equivalent condition to (stop_count == 4'd15)
           //  in order to avoid comparators/xors
           begin
-            data_parll    <= {data_parll,data_tx};
-            frame_counter <= frame_counter + 1;
-            stop_count    <= 4'd0; 
-            next_state    <= FRAME;
+            data_parll[frame_counter + 4'd1]    <= data_tx;
+            frame_counter                       <= frame_counter + 4'b1;
+            stop_count                          <= 4'd0; 
+            next_state                          <= FRAME;
           end
           else 
           begin
-            stop_count <= stop_count + 1;
+            stop_count <= stop_count + 4'b1;
             next_state <= FRAME;
           end
         end
@@ -118,7 +117,6 @@ always @(posedge baud_clk) begin
       //  Holds the data recieved for a 16 baud cycles
       HOLD :
       begin
-        recieved_flag <= 1'b1;
         if(&stop_count[3:0])
           //  This is an equivalent condition to (stop_count == 4'd15)
           //  in order to avoid comparators/xors
@@ -131,7 +129,7 @@ always @(posedge baud_clk) begin
           end
           else 
           begin
-            stop_count <= stop_count + 1;
+            stop_count <= stop_count + 4'b1;
             next_state <= HOLD;
           end
       end
@@ -142,6 +140,7 @@ always @(posedge baud_clk) begin
         next_state <= IDLE;
       end
     endcase
+  end
 end
 
 endmodule

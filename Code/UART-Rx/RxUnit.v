@@ -11,21 +11,21 @@
 //  Full Architecture will be provided in the README file.
 
 module RxUnit(
-    input reset_n,            //  Active low reset.
-    input data_tx,            //  Serial data recieved from the transmitter.
-    input clock,              //  The System's main clock.
-    input [1:0] parity_type,  //  Parity type agreed upon by the Tx and Rx units.
-    input [1:0] baud_rate,    //  Baud Rate agreed upon by the Tx and Rx units.
+    input wire         reset_n,      //  Active low reset.
+    input wire         data_tx,      //  Serial data recieved from the transmitter.
+    input wire         clock,        //  The System's main clock.
+    input wire  [1:0]  parity_type,  //  Parity type agreed upon by the Tx and Rx units.
+    input wire  [1:0]  baud_rate,    //  Baud Rate agreed upon by the Tx and Rx units.
 
-    output active_flag,
+    output             active_flag,
     //  outputs logic 1 when data is in progress.
-    output done_flag,
+    output             done_flag,
     //  Outputs logic 1 when data is recieved
-    output [2:0] error_flag,
+    output      [2:0]  error_flag,
     //  Consits of three bits, each bit is a flag for an error
     //  error_flag[0] ParityError flag, error_flag[1] StartError flag,
     //  error_flag[2] StopError flag.
-    output [7:0] data_out
+    output      [7:0]  data_out
     //  The 8-bits data separated from the frame.
 );
 

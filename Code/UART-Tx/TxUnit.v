@@ -8,16 +8,16 @@
 //  PURPOSE: An RTL modelling for the UART-Tx.
 
 module TxUnit(
-    input reset_n,             //  Active low reset.
-    input send,                //  An enable to start sending data.
-    input clock,               //  The main system's clock.
-    input [1:0] parity_type,   //  Parity type agreed upon by the Tx and Rx units.
-    input [1:0] baud_rate,     //  Baud Rate agreed upon by the Tx and Rx units.
-    input [7:0] data_in,       //  The data input.
+    input wire          reset_n,       //  Active low reset.
+    input wire          send,          //  An enable to start sending data.
+    input wire          clock,         //  The main system's clock.
+    input wire  [1:0]   parity_type,   //  Parity type agreed upon by the Tx and Rx units.
+    input wire  [1:0]   baud_rate,     //  Baud Rate agreed upon by the Tx and Rx units.
+    input wire  [7:0]   data_in,       //  The data input.
 
-    output data_tx,            //  Serial transmitter's data out.
-    output active_flag,        //  high when Tx is transmitting, low when idle.
-    output done_flag           //  high when transmission is done, low when active.
+    output        data_tx,             //  Serial transmitter's data out.
+    output        active_flag,         //  high when Tx is transmitting, low when idle.
+    output        done_flag            //  high when transmission is done, low when active.
 );
 
 //  Interconnections

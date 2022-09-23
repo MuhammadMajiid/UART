@@ -10,14 +10,14 @@
 module SipoTest;
 
 //  Regs to drive inputs
-reg reset_n;
-reg data_tx;
-reg baud_clk;
+reg           reset_n;
+reg           data_tx;
+reg           baud_clk;
 
 //  Wires to show outputs
-wire active_flag;
-wire recieved_flag;
-wire [10:0] data_parll;
+wire          active_flag;
+wire          recieved_flag;
+wire  [10:0]  data_parll;
 
 //  Design instance
 SIPO ForTest(
@@ -39,8 +39,7 @@ end
 
 //  Monitoring the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Active Flag = %b  Recieved Flag = %b  Data = %b
-                        The Inputs:   Reset = %b  Data In = %b",
+    $monitor($time, "   The Outputs:  Active Flag = %b  Recieved Flag = %b  Data = %b  The Inputs:   Reset = %b  Data In = %b",
     active_flag, recieved_flag, data_parll[10:0], reset_n, data_tx);
 end
 

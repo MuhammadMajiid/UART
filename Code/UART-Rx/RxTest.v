@@ -10,18 +10,18 @@
 module RxTest;
 
 //  Regs to drive inputs
-reg reset_n;
-reg data_tx;
-reg clock;
-reg [1:0] parity_type;
-reg [1:0] baud_rate;
+reg         reset_n;
+reg         data_tx;
+reg         clock;
+reg  [1:0]  parity_type;
+reg  [1:0]  baud_rate;
 
 //  Wires to show the outputs
-wire done_flag;
-wire active_flag;
-wire [2:0] error_flag;
-wire [7:0] data_out;
-
+wire         done_flag;
+wire         active_flag;
+wire  [2:0]  error_flag;
+wire  [7:0]  data_out;
+ 
 //  Instance of the design module
 RxUnit ForTest(
     .reset_n(reset_n),
@@ -45,10 +45,7 @@ end
 
 //Monitorin the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Data Out = %b  Error Flag = %b
-                        Active Flag = %b  Done Flag = %b
-                        The Inputs:   Reset = %b   Data In = %b 
-                        Parity Type = %b  Baud Rate = %b ",
+    $monitor($time, "   The Outputs:  Data Out = %b  Error Flag = %b Active Flag = %b  Done Flag = %b  The Inputs:   Reset = %b   Data In = %b  Parity Type = %b  Baud Rate = %b ",
     data_out[7:0], error_flag[2:0], active_flag, done_flag, reset_n, 
     data_tx, parity_type[1:0], baud_rate[1:0]);
 end

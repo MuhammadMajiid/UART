@@ -10,18 +10,18 @@
 module PisoTest;
 
 //Test Inputs
-reg reset_n;
-reg send;
-reg baud_clk;
-reg parity_bit;
+reg       reset_n;
+reg       send;
+reg       baud_clk;
+reg       parity_bit;
 reg [1:0] parity_type;
 reg [7:0] reg_data;
 
 
 //Test outputs
-wire data_tx;
-wire active_flag;
-wire done_flag;
+wire      data_tx;
+wire      active_flag;
+wire      done_flag;
 
 //Instantiation of the designed block
 PISO ForTest(
@@ -33,7 +33,7 @@ PISO ForTest(
 
     .data_tx(data_tx),
     .active_flag(active_flag),
-    .DoneFlag(DoneFlag)
+    .done_flag(done_flag)
 );
 
 //  dump

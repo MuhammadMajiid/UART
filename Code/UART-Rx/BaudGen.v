@@ -9,11 +9,11 @@
 //  Rx clock rates corresponding to the transmitter's.
 
 module BaudGen(
-    input reset_n,           //  Active low reset.
-    input clock,             //  The System's main clock.
-    input [1:0] baud_rate,   //  Baud Rate agreed upon by the Tx and Rx units.
+    input wire         reset_n,     //  Active low reset.
+    input wire         clock,       //  The System's main clock.
+    input wire  [1:0]  baud_rate,   //  Baud Rate agreed upon by the Tx and Rx units.
 
-    output reg baud_clk      //  Clocking output for the other modules.
+    output reg         baud_clk     //  Clocking output for the other modules.
 );
 
 //  Internal declarations
