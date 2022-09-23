@@ -103,7 +103,7 @@ The top module ***Tx*** connects all the architecture.
 ### UART-Rx
 
 *   ***UART-Rx full architecture:***
-![Rx architecture](Images/UART_Tx.png)
+![Rx architecture](Images/UART_Rx.png)
 
 #### Oversampling Unit
 
@@ -121,7 +121,7 @@ It is the heart of the Receiver unit.
 
 ##### Rx FSM
 
-![Sipo FSM](Images/UART_Rx.png)
+![Sipo FSM](Images/Rx_FSM.png)
 
 *   Design module *[SIPO.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/SIPO.v)*
 *   Test bench *[SipoTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/SipoTest.v)*
