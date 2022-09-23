@@ -33,7 +33,7 @@ Duplex DUT(
     .clock(clock_tb),
     .parity_type(parity_type_tb),
     .baud_rate(baud_rate_tb),
-    .data_in(data_in_tb)
+    .data_in(data_in_tb),
 
     //  Outputs
     .tx_active_flag(tx_active_flag_tb),
