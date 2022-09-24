@@ -93,7 +93,7 @@ begin
           frame_counter <= 4'd0;
           recieved_flag <= 1'b1;
           next_state    <= HOLD;
-          recieved_flag <= 1'b1;
+          active_flag   <= 1'b0;
         end
         else
         begin

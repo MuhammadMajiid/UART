@@ -11,6 +11,7 @@ In UART communication, two UARTs communicate directly with each other. The trans
 
 **Table of contents**
 
+- [Full Duplex UART](#full-duplex-uart)
 - [UART-Tx](#uart-tx)
     - [Baud Rate Generator Unit](#baud-rate-generator-unit)
     - [Parity Bit Unit](#parity-bit-unit)
@@ -28,6 +29,17 @@ In UART communication, two UARTs communicate directly with each other. The trans
 - [About The Author](#about-the-author)
 - [About The Project](#about-the-project)
 
+
+
+### Full Duplex UART
+
+*   Implemented a full duplex uart body from the two top modules [TxUnit.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/Full-BodyFull-Body/TxUnit.v) and [RxUnit.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/Full-Body/RxUnit.v).
+
+*   Design module *[Duplex.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/Full-Body/Duplex.v)*
+*   Test bench *[DuplexTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/Full-Body/DuplexTest.v)* 
+
+*   The wave form:
+![Full Duplex UART](Images/Full_UART_wave_form.png)
 
 
 ### UART-Tx

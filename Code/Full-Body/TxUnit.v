@@ -25,7 +25,7 @@ wire parity_bit_w;
 wire baud_clk_w;
 
 //  Baud generator unit instantiation
-BaudGen Unit1(
+BaudGenT Unit1(
     //  Inputs
     .reset_n(reset_n),
     .clock(clock),

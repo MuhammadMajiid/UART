@@ -1,14 +1,14 @@
 //  AUTHOR: Mohamed Maged Elkholy.
 //  INFO.: Undergraduate ECE student, Alexandria university, Egypt.
 //  AUTHOR'S EMAIL: majiidd17@icloud.com
-//  FILE NAME: BaudGen.v
+//  FILE NAME: BaudGenT.v
 //  TYPE: module.
 //  DATE: 30/8/2022
 //  KEYWORDS: Baud Rate, Clock Generator.
 //  PURPOSE: An RTL modelling for a 50MHz-clock gating which generates
 //  slower clock rates that meets the specified Baud Rates.
 
-module BaudGen(
+module BaudGenT(
     input wire         reset_n,           //  Active low reset.
     input wire         clock,             //  The System's main clock.
     input wire  [1:0]  baud_rate,         //  Baud Rate agreed upon by the Tx and Rx units.

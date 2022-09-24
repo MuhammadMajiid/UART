@@ -18,7 +18,7 @@ reg [1:0] baud_rate;
 wire      baud_clk;
 
 //  Instance of the design module
-BaudGen ForTest(
+BaudGenT ForTest(
     .reset_n(reset_n),
     .clock(clock),
     .baud_rate(baud_rate),

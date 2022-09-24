@@ -9,7 +9,7 @@
 `timescale 1ns/1ps
 module DuplexTest;
 
-//  reg to drive the inputs
+//-----------------reg to drive the inputs-----------------\\
 reg        reset_n_tb;
 reg        send_tb;
 reg        clock_tb;
@@ -17,7 +17,7 @@ reg [1:0]  parity_type_tb;
 reg [1:0]  baud_rate_tb;
 reg [7:0]  data_in_tb;
 
-//  wires to show the outputs
+//-----------------wires to show the outputs-----------------\\
 wire       tx_active_flag_tb;
 wire       tx_done_flag_tb;
 wire       rx_active_flag_tb;
@@ -25,7 +25,7 @@ wire       rx_done_flag_tb;
 wire [2:0] error_flag_tb;
 wire [7:0] data_out_tb;
 
-//  DUT
+//-----------------DUT-----------------\\
 Duplex DUT(
     //  Inputs
     .reset_n(reset_n_tb),
@@ -44,59 +44,64 @@ Duplex DUT(
     .data_out(data_out_tb)
 );
 
-//  Save wave form
+//-----------------Save wave form-----------------\\
 initial
 begin
     $dumpfile("DuplexTest.vcd");
     $dumpvars;
 end
 
-//Monitorin the outputs and the inputs
+//-----------------Monitorin the outputs and the inputs-----------------\\
 initial begin
-    $monitor($time, "   The Outputs:  Data Out = %h  Error Flag = %b  Tx Active Flag = %b  Tx Done Flag = %b  
-    Rx Active Flag = %b  Rx Done Flag = %b  The Inputs:   Reset = %b  Send = %b  Data In = %h  Parity Type = %b  Baud Rate = %b ",
+    $monitor($time, "   The Outputs:  Data Out = %h  Error Flag = %b  Tx Active Flag = %b  Tx Done Flag = %b  Rx Active Flag = %b  Rx Done Flag = %b  The Inputs:   Reset = %b  Send = %b  Data In = %h  Parity Type = %b  Baud Rate = %b ",
     data_out_tb[7:0], error_flag_tb[2:0], tx_active_flag_tb, tx_done_flag_tb, rx_active_flag_tb, rx_done_flag_tb, reset_n_tb, send_tb,
     data_in_tb[7:0], parity_type_tb[1:0], baud_rate_tb[1:0]);
 end
 
-//  System clock generator 50MHz
+//-----------------System clock generator 50MHz-----------------\\
 initial 
 begin
-    clock = 1'b0;
+    clock_tb = 1'b0;
     forever 
     begin
-        #10 clock = ~clock;
+        #10 clock_tb = ~clock_tb;
     end
 end
 
-//  Resetting the system
+//-----------------Resetting the system-----------------\\
 initial 
 begin
-    reset_n = 1'b0;
-    #10 reset_n = 1'b1;
+    reset_n_tb = 1'b0;
+    #10 reset_n_tb = 1'b1;
+end
+//-----------------Test NO.1-----------------\\
+initial
+begin
+    send_tb    = 1'b1;
+    //  Testing data
+    data_in_tb = 8'b10101010 ;
+    //  test for baud rate 9600 and odd parity
+    baud_rate_tb   = 2'b10;
+    parity_type_tb = 2'b01;
+    #1354166.671;   //  waits for the whole frame to be sent
 end
 
-//  Varying the Baud Rate and the Parity Type
+//-----------------Test NO.2-----------------\\
 initial
 begin
     //  Testing data
-    data_in = 8'b10101010 ;
-    //  test for baud rate 9600 and odd parity
-    baud_rate   = 2'b10;
-    parity_type = 2'b01;
-    #1354166.671;   //  waits for the whole frame to be sent
-
-    //  Testing data
-    data_in = 8'b10101010 ;
+    #1300000;
+    data_in_tb = 8'b1011100 ;
+    #90000;  // waits for the first frame
     //  test for baud rate 19200 and even parity
-    baud_rate   = 2'b11;
-    parity_type = 2'b10;
+    baud_rate_tb   = 2'b11;
+    parity_type_tb = 2'b10;
     #677083.329;   //  waits for the whole frame to be sent
 end
 
-//  Stop
+//-----------------Stop-----------------\\                       
 initial begin
-    #2600000 $stop;
+    #2450000 $stop;
     // Simulation for 3 ms
 end
 

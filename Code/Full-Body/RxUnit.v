@@ -38,7 +38,7 @@ wire def_strt_bit_w;      //  The Start bit from the Deframe unit to the ErrorCh
 wire def_stp_bit_w;       //  The Stop bit from the Deframe unit to the ErrorCheck unit.
 
 //  clocking Unit Instance
-BaudGen Unit1(
+BaudGenR Unit1(
     //  Inputs
     .reset_n(reset_n),
     .clock(clock),
