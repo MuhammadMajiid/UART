@@ -62,7 +62,7 @@ This unit supports four possible baud rates:
 *   The latter two are the most common.
 *   The values of the timer calculated for the baud rates are for the **50MHz** system's clock, those values need to be re-calculated for different clock frequencies.
 
-*   Design module *[BaudGen.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Tx/BaudGen.v)*
+*   Design module *[BaudGenT.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Tx/BaudGenT.v)*
 *   Test bench *[BaudTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Tx/BaudTest.v)*
 
 
@@ -121,7 +121,7 @@ The top module ***Tx*** connects all the architecture.
 
 It is a ***Baud Rate Generator***, but uses a sampling rate of 16 times the baud rate, which means that each serial bit is sampled 16 times, this methodology shifts the time to read the data to the center of the bit.
 
-*   Design module *[BaudGen.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/BaudGen.v)*
+*   Design module *[BaudGenR.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/BaudGenR.v)*
 *   Test bench *[BaudTest.v](https://github.com/MuhammadMajiid/UART/blob/main/Code/UART-Rx/BaudTest.v)*
 *   *For more information about the oversampling used in this project, check [Oversampling methodology](https://robo-tronix.weebly.com/uploads/2/3/2/1/23219916/uart_design_doc.pdf).*
 
