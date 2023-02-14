@@ -17,12 +17,11 @@ module SIPO(
 
     output wire         active_flag,    //  outputs logic 1 when data is in progress.
     output wire         recieved_flag,  //  outputs a signal enables the deframe unit. 
-    output reg  [10:0]  data_parll      //  outputs the 11-bit parallel frame.
+    output wire  [10:0] data_parll      //  outputs the 11-bit parallel frame.
 );
 //  Internal
-reg [10:0] temp;
-reg [3:0]  frame_counter;
-reg [3:0]  stop_count;
+reg [10:0] temp, data_parll_temp;
+reg [3:0]  frame_counter, stop_count;
 reg [1:0]  next_state;
 
 //  Encoding the states of the reciever
@@ -68,7 +67,7 @@ always @(posedge baud_clk, negedge reset_n) begin
 
       FRAME :
       begin
-        temp <= data_parll;
+        temp <= data_parll_temp;
         if(frame_counter == 4'd10) begin
           frame_counter <= 4'd0;
           next_state    <= IDLE;
@@ -89,7 +88,7 @@ always @(posedge baud_clk, negedge reset_n) begin
 
       GET : begin 
         next_state     <= FRAME;
-        temp           <= data_parll;
+        temp           <= data_parll_temp;
       end
     endcase
   end
@@ -97,15 +96,16 @@ end
 
 always @(*) begin
   case (next_state)
-    IDLE, CENTER, FRAME: data_parll  = temp;
+    IDLE, CENTER, FRAME: data_parll_temp  = temp;
 
     GET : begin
-      data_parll    = temp << 1;
-      data_parll[0] = data_tx;
+      data_parll_temp    = temp >> 1;
+      data_parll_temp[10] = data_tx;
     end
   endcase
 end
 
+assign data_parll    = recieved_flag? data_parll_temp : {11{1'b1}};
 assign recieved_flag = (frame_counter == 4'd10);
 assign active_flag   = !recieved_flag;
 

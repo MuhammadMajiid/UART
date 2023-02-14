@@ -64,9 +64,8 @@ SIPO Unit2(
 //  DeFramer Unit Instance
 DeFrame Unit3(
     //  Inputs
-    .reset_n(reset_n),
-    .recieved_flag(recieved_flag_w),
     .data_parll(data_parll_w),
+    .recieved_flag(recieved_flag_w),
     
     //  Outputs
     .parity_bit(def_par_bit_w),

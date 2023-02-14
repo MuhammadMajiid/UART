@@ -10,8 +10,6 @@
 module DeFrameTest;
 
 //  Regs to drive the inputs
-reg          reset_n;
-reg          recieved_flag;
 reg  [10:0]  data_parll;
 
 //  Wires to show the outputs
@@ -23,8 +21,6 @@ wire  [7:0]  raw_data;
 
 //  Design module instance
 DeFrame ForTest(
-    .reset_n(reset_n),
-    .recieved_flag(recieved_flag),
     .data_parll(data_parll),
 
     .parity_bit(parity_bit),
@@ -43,29 +39,13 @@ end
 
 //Monitorin the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  Data Out = %b  Start bit = %b  Stop bit = %b  Parity bit = %b Done Flag = %b   The Inputs: Reset = %b  Data In = %b Recieved Flag = %b ",
-    raw_data[7:0], start_bit, stop_bit, parity_bit, done_flag, 
-    reset_n, data_parll[10:0], recieved_flag);
-end
-
-
-//  Resetting the system
-initial begin
-    reset_n = 1'b0;
-    #10 reset_n = 1'b1;
+    $monitor($time, "   The Outputs:  Data Out = %b  Start bit = %b  Stop bit = %b  Parity bit = %b Done Flag = %b   The Inputs: Data In = %b",
+    raw_data[7:0], start_bit, stop_bit, parity_bit, done_flag, data_parll[10:0]);
 end
 
 //  Initializing the Data
 initial begin
     data_parll = {11{1'b1}};
-end
-
-//  Enable
-initial begin
-    recieved_flag = 1'b0;
-    #10 recieved_flag = 1'b1;
-    #50 recieved_flag = 1'b0;
-    #30 recieved_flag = 1'b1;
 end
 
 //  Test
