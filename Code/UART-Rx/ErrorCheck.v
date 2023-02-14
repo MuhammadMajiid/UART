@@ -40,58 +40,26 @@ localparam ODD        = 2'b01,
 //  Parity Check logic
 always @(*) 
 begin
-    case (parity_type)
-      NOPARITY00, NOPARITY11:
-      begin
-      error_parity <= 1'b1;      
-      end
-
-      ODD: 
-      begin
-        error_parity <= (^raw_data)? 1'b0 : 1'b1;
-      end
-
-      EVEN: 
-      begin
-        error_parity <= (^raw_data)? 1'b1 : 1'b0;
-      end
-
-      default: 
-      begin
-        error_parity <= 1'b1;      
-        //  No Parity
-      end
-    endcase
+  case (parity_type)
+    ODD:     error_parity = (^raw_data)? 1'b0 : 1'b1;
+    EVEN:    error_parity = (^raw_data)? 1'b1 : 1'b0;
+    default: error_parity = 1'b1;
+  endcase
 end
 
+// Error Check logic
 always @(*) begin
-  if (~reset_n) 
+  if (reset_n && recieved_flag) 
   begin
-    parity_flag  <= 1'b0;
-    start_flag   <= 1'b0;
-    stop_flag    <= 1'b0;
+    parity_flag  = (error_parity ^ parity_bit);
+    start_flag   = (start_bit || 1'b0);
+    stop_flag    = ~(stop_bit && 1'b1);
   end
   else
   begin
-    //  flag logic
-    if(recieved_flag)
-    begin
-      parity_flag <= ~(error_parity && parity_bit);
-      //  Equivalent to (error_parity != parity_bit)
-      //  in order to avoid comparators/xors
-      start_flag  <= (start_bit || 1'b0);
-      //  Equivalent to (start_bit != 1'b0)
-      //  in order to avoid comparators/xors
-      stop_flag   <= ~(stop_bit && 1'b1);
-      //  Equivalent to (stop_bit != 1'b1)
-      //  in order to avoid comparators/xors
-    end
-    else
-    begin
-      parity_flag  <= 1'b0;
-      start_flag   <= 1'b0;
-      stop_flag    <= 1'b0;
-    end
+    parity_flag  = 1'b0;
+    start_flag   = 1'b0;
+    stop_flag    = 1'b0;
   end
 end
 

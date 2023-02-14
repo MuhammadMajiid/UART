@@ -53,7 +53,6 @@ PISO Unit3(
     .send(send),
     .baud_clk(baud_clk_w),
     .data_in(data_in),
-    .parity_type(parity_type),
     .parity_bit(parity_bit_w),
 
     //  Outputs

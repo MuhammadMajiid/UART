@@ -17,43 +17,19 @@ module Parity(
 );
 
 //  Encoding for the parity types
-localparam NOPARITY00 = 2'b00,
-           ODD        = 2'b01,
-           Even       = 2'b10,
-           NOPARITY11 = 2'b11;
+localparam ODD        = 2'b01,
+           Even       = 2'b10;
 
-//  parity logic with Asynch active low reset 
 always @(*)
 begin
-  if (~reset_n) begin
-    //  No parity bit
-    parity_bit <= 1'b1;
-  end
+  if (!reset_n) parity_bit = 1'b1;
   else
   begin
     case (parity_type)
-    NOPARITY00, NOPARITY11:
-    begin
-      //  No parity bit
-      parity_bit <= 1'b1;
-    end
-    ODD:
-    begin
-      //  Odd Parity
-      parity_bit <= (^data_in)? 1'b0 : 1'b1;
-    end
-    Even: 
-    begin
-      //  Even parity
-      parity_bit <= (^data_in)? 1'b1 : 1'b0;    
-    end
-    default:
-    begin
-      //  No parity
-      parity_bit <= 1'b1;
-    end  
+    ODD:     parity_bit = (^data_in)? 1'b0 : 1'b1;
+    Even:    parity_bit = (^data_in)? 1'b1 : 1'b0; 
+    default: parity_bit = 1'b1;
     endcase
   end
 end
-
 endmodule

@@ -45,9 +45,7 @@ end
 
 //Monitorin the outputs and the inputs
 initial begin
-    $monitor($time, "   The Outputs:  DataOut = %b  ActiveFlag = %b  DoneFlag = %b  
-                        The Inputs:   Send = %b  Reset = %b   ParityType = %b  
-                        Parity Bit = %b  Data In = %b ",
+    $monitor($time, "   The Outputs:  DataOut = %b  ActiveFlag = %b  DoneFlag = %b The Inputs:   Send = %b  Reset = %b   ParityType = %b   Parity Bit = %b  Data In = %b ",
      data_tx, active_flag, done_flag, send, reset_n, parity_type[1:0], parity_bit, reg_data[7:0]);
 end
 

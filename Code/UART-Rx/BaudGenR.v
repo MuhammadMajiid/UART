@@ -43,15 +43,13 @@ end
 //  Timer logic
 always @(negedge reset_n, posedge clock) 
 begin
-  if(~reset_n) 
+  if(!reset_n) 
   begin
     clock_ticks   <= 10'd0;
     baud_clk      <= 1'b0;
   end
   else 
   begin
-    //  Ticks whenever reaches its final value,
-    //  Then resets and starts all over again.
     if(clock_ticks == final_value)
     begin
       baud_clk      <= ~baud_clk;

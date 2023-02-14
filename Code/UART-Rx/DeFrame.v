@@ -20,37 +20,24 @@ module DeFrame(
     output reg  [7:0]   raw_data        //  The 8-bits data separated from the data frame.
 );
 
-//  -Deframing- Output Data & parity bit logic with Asynchronous Reset 
+//  Deframing 
 always @(*) 
 begin
-  if (~reset_n) 
+  if (!reset_n || !recieved_flag) 
   begin
-    //  Idle
-    raw_data     <= {8{1'b1}};
-    parity_bit   <= 1'b1;
-    start_bit    <= 1'b0;
-    stop_bit     <= 1'b1;
-    done_flag    <= 1'b1;
+    raw_data[7:0]     = {8{1'b1}};
+    parity_bit        = 1'b1;
+    start_bit         = 1'b0;
+    stop_bit          = 1'b1;
+    done_flag         = 1'b0;
   end
-  else
-  begin
-    if (recieved_flag)
-    begin
-      start_bit  <= data_parll[0];
-      raw_data   <= data_parll[8:1];
-      parity_bit <= data_parll[9];
-      stop_bit   <= data_parll[10];
-      done_flag  <= 1'b1;
-    end
-    else 
-    begin
-      //  Idle
-      raw_data   <= {8{1'b1}};
-      parity_bit <= 1'b1;
-      start_bit  <= 1'b0;
-      stop_bit   <= 1'b1;
-      done_flag  <= 1'b0;
-    end
+  else begin
+      start_bit       = data_parll[10];
+      raw_data[7:4]   = {data_parll[2],data_parll[3],data_parll[4],data_parll[5]};
+      raw_data[3:0]   = {data_parll[6],data_parll[7],data_parll[8],data_parll[9]};
+      parity_bit      = data_parll[1];
+      stop_bit        = data_parll[0];
+      done_flag       = 1'b1;
   end
 end
 
